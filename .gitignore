@@ -1,0 +1,67 @@
+# dependencies
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# environment
+.env
+.env.local
+.env.*.local
+.env.development
+.env.test
+.env.production
+
+# Logs
+logs/
+*.log
+logs/*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+debug.log*
+out.log*
+error.log*
+
+# Editor & OS files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+dist/
+build/
+.cache/
+.next/
+out/
+coverage/
+public/
+*.tsbuildinfo
+
+# Static site generators (Next.js, Nuxt, Gatsby, etc.)
+.next/
+.nuxt/
+.gatsby/
+
+# TypeScript
+*.tsbuildinfo
+
+# Testing
+coverage/
+jest/
+cypress/screenshots/
+cypress/videos/
+playwright-report/
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
