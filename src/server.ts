@@ -5,7 +5,7 @@ import morgan from 'morgan'; // Http request logger, help debug
 // Import routes
 import testRoutes from "./routes/test";
 import exampleRoutes from "./routes/example";
-import authRoutes from "./routes/example";
+import authRoutes from "./routes/auth";
 
 // Configuration
 const app = express();
