@@ -1,8 +1,11 @@
-import express from 'express';
+import express, { application } from 'express';
 import config from "./config/config";
 import morgan from 'morgan'; // Http request logger, help debug
 
-
+// Import routes
+import testRoutes from "./routes/test";
+import exampleRoutes from "./routes/example";
+import authRoutes from "./routes/example";
 
 // Configuration
 const app = express();
@@ -11,10 +14,10 @@ const PORT: number = config.PORT;
 
 app.use(morgan("common"));
 
-//Place holder
-app.get('/', (req, res) => {
-  res.send('Place holder for Elite Space App!')
-})
+// Use routes
+app.use(testRoutes);
+app.use(exampleRoutes);
+app.use(authRoutes);
 
 // Listener
 app.listen(PORT, HOST, () => {
