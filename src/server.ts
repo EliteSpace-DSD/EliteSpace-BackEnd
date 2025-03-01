@@ -3,8 +3,6 @@ import config from "./config/config";
 import morgan from 'morgan'; // Http request logger, help debug
 
 // Import routes
-import testRoutes from "./routes/test";
-import exampleRoutes from "./routes/example";
 import authRoutes from "./routes/auth";
 
 // Configuration
@@ -15,8 +13,6 @@ const PORT: number = config.PORT;
 app.use(morgan("common"));
 
 // Use routes
-app.use(testRoutes);
-app.use(exampleRoutes);
 app.use(authRoutes);
 
 // Listener
