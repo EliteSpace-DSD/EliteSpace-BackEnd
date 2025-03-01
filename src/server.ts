@@ -4,6 +4,7 @@ import morgan from 'morgan'; // Http request logger, help debug
 
 // Import routes
 import authRoutes from "./routes/auth";
+import miscRoutes from "./routes/miscRoutes"
 
 // Configuration
 const app = express();
@@ -14,6 +15,7 @@ app.use(morgan("common"));
 
 // Use routes
 app.use(authRoutes);
+app.use('/api',miscRoutes);
 
 // Listener
 app.listen(PORT, HOST, () => {
