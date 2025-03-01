@@ -54,9 +54,10 @@ export const tenants = pgTable('tenants', {
     id: uuid('id').primaryKey().defaultRandom(),
     firstName: text('first_name').notNull(),
     lastName: text('last_name').notNull(),
-    age: integer('age'),
+    dob: date('dob'),
     email: varchar('email', { length: 255 }).notNull().unique(),
     phone: text('phone'),
+    user_id: uuid('user_id'),
     passwordHash: varchar('password_hash', { length: 255 }).notNull(),
     ...timestamps
 });
