@@ -8,6 +8,20 @@
       "when": 1740430588918,
       "tag": "0000_next_jack_power",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1740792209614,
+      "tag": "0002_shiny_midnight",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1740792331368,
+      "tag": "0003_dizzy_zeigeist",
+      "breakpoints": true
     }
   ]
 }
