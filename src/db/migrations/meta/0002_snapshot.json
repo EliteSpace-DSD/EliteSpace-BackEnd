@@ -1,6 +1,6 @@
 {
-  "id": "1a17817f-0e86-4332-a29c-071bf4493310",
-  "prevId": "9a72a9e9-4a2c-4022-825f-f2b890d9f361",
+  "id": "5709284e-9fe0-4eff-beca-b7c4606539e2",
+  "prevId": "1a17817f-0e86-4332-a29c-071bf4493310",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -683,12 +683,6 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
-        },
-        "dob": {
-          "name": "dob",
-          "type": "date",
-          "primaryKey": false,
-          "notNull": false
         },
         "email": {
           "name": "email",
