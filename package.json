@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "drizzle-orm": "^0.39.3",
     "express": "^4.21.2",
@@ -25,6 +26,7 @@
     "postgres": "^3.4.5"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.13.5",
