@@ -17,7 +17,6 @@ router.post('/register', async (req: Request, res: Response) => {
         const { data, error } = await signUpNewUser(email, password);
 
         if (error) {
-            console.log(error);
             res.status(500).json({ message: 'Error signing up.' });
             return;
         };
@@ -26,13 +25,13 @@ router.post('/register', async (req: Request, res: Response) => {
             const { error: dbError } = await linkUserToTenant(email, data.user.id);
 
             if (dbError) {
-                throw new Error('Error linking tenant');
-            }
+                res.status(500).json({ message: 'Server error' });
+            };
 
+            res.status(200).json({ message: 'Account registered.' });
             return;
-        }
+        };
     } catch (error) {
-        console.log(error)
         res.status(500).json({ message: 'Server error' });
         return;
     };
