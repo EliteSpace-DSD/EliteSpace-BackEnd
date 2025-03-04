@@ -9,6 +9,7 @@ import { requiresAuthentication } from "./middleware/authMiddleware";
 import authRoutes from "./routes/auth";
 import leaseRoutes from "./routes/leases";
 
+import cors from "cors";
 // Configuration
 const app = express();
 const HOST: string = config.HOST;
@@ -29,6 +30,8 @@ app.use(cookieParser()); // Enables reading cookies from req.cookies
 // Allows request from frontend
 app.use(cors({ origin: "http://localhost:5173" }));
 
+//Allows frontend to communicate with backend
+app.use(cors({ origin: "http://localhost:5173" }));
 // Use routes
 app.use("/auth", authRoutes);
 app.use("/leases", requiresAuthentication, leaseRoutes);
