@@ -17,7 +17,8 @@ router.post('/register', async (req: Request, res: Response) => {
         const { data, error } = await signUpNewUser(email, password);
 
         if (error) {
-            res.status(500).json({ message: 'Error signing up.' });
+            const errorMsg = error.code === 'weak_password' ? 'Password not strong enough. Must be atleast 6 characters.' : 'Error signing up';
+            res.status(500).json({ message: errorMsg });
             return;
         };
 
