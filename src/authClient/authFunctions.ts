@@ -1,11 +1,13 @@
 import { authClient } from '.';
 
 export async function signUpNewUser(email: string, password: string) {
+    const redirectURL = process.env.EMAIL_REDIRECT_URL;
+
     const { data, error } = await authClient.auth.signUp({
         email: email,
         password: password,
         options: {
-            emailRedirectTo: 'http://elite.space/dashboard',
+            emailRedirectTo: redirectURL,
         },
     });
 
