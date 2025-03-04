@@ -20,6 +20,22 @@ export const getTenantById = async (tenantId: string) => {
     }
 };
 
+export const getTenantByEmail = async (tenantEmail: string) => {
+    try {
+        const result = await db.select().from(tenants).where(eq(
+            tenants.email, tenantEmail
+        ));
+
+        if (!result) {
+            return;
+        };
+
+        return result[0];
+    } catch (error) {
+        throw new Error('Failed to fetch tenant by email');
+    };
+};
+
 export const updateTenant = async (tenantId: string, updates: Partial<TenantInsertType>) => {
     try {
         const result = await db.update(tenants)

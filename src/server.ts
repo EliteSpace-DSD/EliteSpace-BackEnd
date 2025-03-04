@@ -10,10 +10,11 @@ const app = express();
 const HOST: string = config.HOST;
 const PORT: number = config.PORT;
 
+app.use(express.json());
 app.use(morgan("common"));
 
 // Use routes
-app.use(authRoutes);
+app.use('/auth', authRoutes);
 
 // Listener
 app.listen(PORT, HOST, () => {
