@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { getTenantByEmail } from '../db/models/tenant';
-import { signUpNewUser, linkUserToTenant } from '../authClient/authFunctions';
+import { signUpNewUser, linkUserToTenant, signInWithEmail } from '../authClient/authFunctions';
 
 const router = express.Router();
 
@@ -37,5 +37,14 @@ router.post('/register', async (req: Request, res: Response) => {
         return;
     };
 });
+
+router.post('/signin', async (req: Request, res: Response) => {
+    try {
+        //do something
+    } catch (error) {
+        res.status(500).json({message: 'Server error'});
+        return;
+    }
+})
 
 export default router;
