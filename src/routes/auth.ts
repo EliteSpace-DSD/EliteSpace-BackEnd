@@ -50,10 +50,25 @@ router.post('/signin', async (req: Request, res: Response) => {
             return 
         }
 
-        if (data) {
-            res.status(200).json({ message: 'Signed in successfully', user: data });
+        // Set session cookie (for persistence)
+        const {session} = data;
+        if (!session) {
+            res.status(500).json({message: "failed to retrieve session."});
             return;
         }
+
+        const thirtyDaysInSeconds = 30 * 24 * 60 * 60;
+
+        res.cookie('sb-access-token', session.access_token, {
+            httpOnly: true, //Prevents JS access
+            // secure: true, // only sent over HTTPS, set as true only in production
+            sameSite: 'strict',
+            maxAge: session.expires_in * thirtyDaysInSeconds,
+
+        })
+
+        res.status(200).json({ message: 'Signed in successfully'});
+        return;
 
     } catch (error) {
         res.status(500).json({message: 'Server error'});
