@@ -39,13 +39,22 @@ router.post('/register', async (req: Request, res: Response) => {
 });
 
 
-// Note: users need to confirm their email before being able to sign in
+// Note: users needs to click confirm on their confirmation email before being able to sign in
 router.post('/signin', async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
         const {data, error} = await signInWithEmail(email, password);
-        console.log("Check Point 1");
-        console.log(data);
+
+        if (error) {
+            res.status(401).json({ message: 'Invalid email or password. Please try again.' });
+            return 
+        }
+
+        if (data) {
+            res.status(200).json({ message: 'Signed in successfully', user: data });
+            return;
+        }
+
     } catch (error) {
         res.status(500).json({message: 'Server error'});
         return;
