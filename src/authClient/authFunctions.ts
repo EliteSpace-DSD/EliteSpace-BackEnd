@@ -1,4 +1,4 @@
-import { authClient } from '.';
+import { authClient } from './supabaseClient';
 
 export async function signUpNewUser(email: string, password: string) {
     const redirectURL = process.env.EMAIL_REDIRECT_URL;
