@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { getTenantByEmail } from '../db/models/tenant';
-import { signUpNewUser, linkUserToTenant, signInWithEmail } from '../authClient/authFunctions';
+import { signUpNewUser, linkUserToTenant, signInWithEmail } from '../authentication/authFunctions';
 
 const router = express.Router();
 
