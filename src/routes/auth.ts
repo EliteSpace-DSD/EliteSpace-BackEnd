@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { getTenantByEmail } from '../db/models/tenant';
-import { signUpNewUser, linkUserToTenant } from '../authClient/authFunctions';
+import { initiatePasswordReset, linkUserToTenant, signUpNewUser, updatePassword, verifyOtp } from '../authClient/authFunctions';
 
 const router = express.Router();
 
@@ -36,6 +36,60 @@ router.post('/register', async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Server error' });
         return;
     };
+});
+
+router.post('/forgot-password', async (req: Request, res: Response) => {
+    try {
+        const { email } = req.body;
+        const { data, error } = await initiatePasswordReset(email);
+
+        if (error) {
+            console.log(error);
+            res.status(400).json({ message: 'something went wrong' })
+        };
+
+        res.status(200).json({ message: 'Password reset email sent.' });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    };
+});
+
+router.post('/update-password', async (req: Request, res: Response) => {
+    const { data, error } = await updatePassword(req, res);
+
+    if (error) {
+        console.log(error);
+        res.status(400).json({ message: 'Not authorized. Unable to reset password.' });
+        return;
+    }
+
+    res.status(200).json({ message: 'Password reset successfully.' });
+    return;
+});
+
+router.get('/confirm', async function (req: Request, res: Response) {
+    const { token_hash, type, next } = req.query;
+    const ERROR_PAGE_URL = process.env.ERROR_PAGE_URL;
+
+    /*
+    query parameters are typed in Express as string | ParsedQs (when query param is an obj) | (string | ParsedQs[]). This last one represents an array of those types. These values are passed to to verifyOtp, which expects only a string type that matches specific enums. So there is a type mismatch. Using type narrowing here to ensure that the
+    variables are the expected type before calling verifyOtp to prevent crashing the server*/
+    if (typeof token_hash === 'string' &&
+        typeof type === 'string' &&
+        (type === 'recovery')) {
+        const error = await verifyOtp({ type, token_hash, req, res });
+
+        if (!error) {
+            if (next) {
+                res.redirect(303, `${next}`);
+                return;
+            }
+        };
+    };
+
+
+    res.redirect(303, ERROR_PAGE_URL!);
+    return;
 });
 
 export default router;
