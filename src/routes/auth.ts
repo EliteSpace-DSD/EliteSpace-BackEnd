@@ -50,6 +50,9 @@ router.post('/signin', async (req: Request, res: Response) => {
             return 
         }
 
+        console.log("session info");
+        console.log(data.session);
+
         // Set session cookie (for persistence)
         const {session} = data;
         if (!session) {
@@ -57,13 +60,13 @@ router.post('/signin', async (req: Request, res: Response) => {
             return;
         }
 
-        const thirtyDaysInSeconds = 30 * 24 * 60 * 60;
+        const thirtyDaysInMilliseconds = 30 * 24 * 60 * 60 * 1000;
 
         res.cookie('sb-access-token', session.access_token, {
             httpOnly: true, //Prevents JS access
             // secure: true, // only sent over HTTPS, set as true only in production
             sameSite: 'strict',
-            maxAge: session.expires_in * thirtyDaysInSeconds,
+            maxAge: session.expires_in * thirtyDaysInMilliseconds ,
 
         })
 
