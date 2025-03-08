@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import { getTenantByEmail } from '../db/models/tenant';
-import { initiatePasswordReset, linkUserToTenant, signUpNewUser, updatePassword, verifyOtp } from '../authClient/authFunctions';
+import { initiatePasswordReset, linkUserToTenant, signInWithEmail, signUpNewUser, updatePassword, verifyOtp } from '../authClient/authFunctions';
+
 
 const router = express.Router();
 
@@ -91,5 +92,41 @@ router.get('/confirm', async function (req: Request, res: Response) {
     res.redirect(303, ERROR_PAGE_URL!);
     return;
 });
+
+// Note: users needs to click confirm on their confirmation email before being able to sign in
+router.post('/signin', async (req: Request, res: Response) => {
+    try {
+        const { email, password } = req.body;
+        const {data, error} = await signInWithEmail(email, password);
+
+        if (error) {
+            res.status(401).json({ message: 'Invalid email or password. Please try again.' });
+            return 
+        }
+
+        // Set session cookie (for persistence)
+        const {session} = data;
+        if (!session) {
+            res.status(500).json({message: "failed to retrieve session."});
+            return;
+        }
+
+        // access token expires_in by default is 3600 seconds, * 1000 = 3600000 milliseconds = 1 hour
+        res.cookie('sb-access-token', session.access_token, {
+            httpOnly: true, //Prevents JS access
+            // secure: true, // only sent over HTTPS, set as true only in production
+            sameSite: 'strict',
+            maxAge: session.expires_in * 1000,
+
+        })
+
+        res.status(200).json({ message: 'Signed in successfully'});
+        return;
+
+    } catch (error) {
+        res.status(500).json({message: 'Server error'});
+        return;
+    }
+})
 
 export default router;
