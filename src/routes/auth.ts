@@ -57,13 +57,12 @@ router.post('/signin', async (req: Request, res: Response) => {
             return;
         }
 
-        const thirtyDaysInSeconds = 30 * 24 * 60 * 60;
-
+        // access token expires_in by default is 3600 seconds, * 1000 = 3600000 milliseconds = 1 hour
         res.cookie('sb-access-token', session.access_token, {
             httpOnly: true, //Prevents JS access
             // secure: true, // only sent over HTTPS, set as true only in production
             sameSite: 'strict',
-            maxAge: session.expires_in * thirtyDaysInSeconds,
+            maxAge: session.expires_in * 1000,
 
         })
 
