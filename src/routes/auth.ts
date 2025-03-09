@@ -79,11 +79,4 @@ router.post('/signin', async (req: Request, res: Response) => {
     }
 })
 
-// test route
-import {requiresAuthentication} from "../middleware/authMiddleware";
-router.get('/protected-route', requiresAuthentication, async (req: Request, res: Response) => {
-    console.log(req.user);
-    res.status(200).json({message: `You have access! User email: ${req.user.email}`});
-})
-
 export default router;
