@@ -18,7 +18,7 @@ export const newServerClient = (context: { req: Request, res: Response }) => {
             },
             setAll(cookiesToSet) {
                 cookiesToSet.forEach(({ name, value, options }) =>
-                    context.res.appendHeader('Set-Cookie', serializeCookieHeader(name, value, options))
+                    context.res.setHeader('Set-Cookie', serializeCookieHeader(name, value, options))
                 )
             },
         },
