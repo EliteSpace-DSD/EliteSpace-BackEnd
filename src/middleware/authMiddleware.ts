@@ -1,14 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import {authClient} from '../authentication/supabaseClient';
 
-interface AuthenticatedRequest extends Request {
-    user?: any;  // req.user has type safety
-}
-
 export const requiresAuthentication =  async (req: Request, res: Response, next: NextFunction) => {
     try {
         const token = req.cookies['sb-access-token'];
-
         if (!token) {
             res.status(401).json({message: "Unauthorized. No session found."});
             return;
