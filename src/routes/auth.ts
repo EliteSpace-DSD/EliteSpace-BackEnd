@@ -50,7 +50,7 @@ router.post('/forgot-password', async (req: Request, res: Response) => {
         };
 
         res.status(200).json({ message: 'Password reset email sent.' });
-        retun;
+        return;
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
         return;
@@ -99,17 +99,17 @@ router.get('/confirm', async function (req: Request, res: Response) {
 router.post('/signin', async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
-        const {data, error} = await signInWithEmail(email, password);
+        const { data, error } = await signInWithEmail(email, password);
 
         if (error) {
             res.status(401).json({ message: 'Invalid email or password. Please try again.' });
-            return 
+            return
         }
 
         // Set session cookie (for persistence)
-        const {session} = data;
+        const { session } = data;
         if (!session) {
-            res.status(500).json({message: "failed to retrieve session."});
+            res.status(500).json({ message: "failed to retrieve session." });
             return;
         }
 
@@ -122,11 +122,11 @@ router.post('/signin', async (req: Request, res: Response) => {
 
         })
 
-        res.status(200).json({ message: 'Signed in successfully'});
+        res.status(200).json({ message: 'Signed in successfully' });
         return;
 
     } catch (error) {
-        res.status(500).json({message: 'Server error'});
+        res.status(500).json({ message: 'Server error' });
         return;
     }
 })
