@@ -45,13 +45,15 @@ router.post('/forgot-password', async (req: Request, res: Response) => {
         const { data, error } = await initiatePasswordReset(email);
 
         if (error) {
-            console.log(error);
-            res.status(400).json({ message: 'something went wrong' })
+            res.status(400).json({ message: 'something went wrong' });
+            return;
         };
 
         res.status(200).json({ message: 'Password reset email sent.' });
+        retun;
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
+        return;
     };
 });
 
