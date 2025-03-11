@@ -13,7 +13,7 @@ const HOST: string = config.HOST;
 const PORT: number = config.PORT;
 
 // Allows us to set new property `user` for Request object throughout this project
-// Ex: req.user
+// Ex: req.user will have info from users table, NOT from tenants table.
 declare module "express-serve-static-core" {
     interface Request {
       user?: any;
