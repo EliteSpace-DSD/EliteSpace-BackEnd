@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+
 import "dotenv/config";
 
 if (!process.env.GEMINI_API_KEY) {
