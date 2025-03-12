@@ -1,6 +1,15 @@
 import express, { Request, Response } from 'express';
 import { getTenantByEmail } from '../db/models/tenant';
-import { initiatePasswordReset, linkUserToTenant, signInWithEmail, signUpNewUser, updatePassword, verifyOtp } from '../authClient/authFunctions';
+import {
+  initiatePasswordReset,
+  linkUserToTenant,
+  signInWithEmail,
+  signUpNewUser,
+  updatePassword,
+  verifyOtp,
+  signout
+} from '../authClient/authFunctions';
+
 
 
 const router = express.Router();
@@ -131,6 +140,23 @@ router.post('/signin', async (req: Request, res: Response) => {
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
         return;
+    }
+})
+
+router.post('/signout', async(req: Request, res: Response) => {
+    
+    try {
+        const error = await signout();
+        if (error) {
+            res.status(401).json({ message: 'Sign out error.' });
+            return;
+        }
+
+        res.status(200).json({message: 'Signed out successfully'});
+        return;
+    } catch(error) {
+        res.status(500).json({ message: 'Server error' });
+        return;    
     }
 })
 
