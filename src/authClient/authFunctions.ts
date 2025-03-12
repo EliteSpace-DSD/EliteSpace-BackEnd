@@ -64,4 +64,4 @@ export async function verifyOtp({ type, token_hash, req, res }: VerifyOtpParams)
     });
 
     return error;
-}
+};
