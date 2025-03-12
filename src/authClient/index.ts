@@ -2,11 +2,13 @@ import { createClient } from '@supabase/supabase-js';
 import { createServerClient, parseCookieHeader, serializeCookieHeader } from '@supabase/ssr'
 import { Request, Response } from 'express';
 
+
 const { SUPABASE_URL, SUPABASE_KEY } = process.env;
 
 if (!SUPABASE_URL || !SUPABASE_KEY) {
     throw new Error('Supabase variables missing from env');
 }
+
 
 export const authClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 
