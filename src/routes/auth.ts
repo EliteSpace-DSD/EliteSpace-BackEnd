@@ -115,9 +115,6 @@ router.post('/signin', async (req: Request, res: Response) => {
             return
         }
 
-        console.log("session info");
-        console.log(data.session);
-
         // Set session cookie (for persistence)
         const { session } = data;
         if (!session) {
