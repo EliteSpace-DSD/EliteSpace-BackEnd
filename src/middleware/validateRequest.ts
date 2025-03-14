@@ -13,7 +13,7 @@ export const validateAccessCodeRequest = (
   }
 
   if (isNaN(Number(timeLimit)) || Number(timeLimit) <= 0) {
-    res.status(400).json({ error: "Time limit must be a positive number" });
+    res.status(400).json({ error: "Time limit must be greater than zero" });
     return;
   }
 
