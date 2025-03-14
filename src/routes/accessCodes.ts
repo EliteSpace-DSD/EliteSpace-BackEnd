@@ -1,22 +1,27 @@
 import express, { Request, Response } from "express";
 import { createAccessCode } from "../db/models/accessCodes";
 import { validateAccessCodeRequest } from "../middleware/validateRequest";
-
+import crypto from "crypto";
 const router = express.Router();
 
 router.post(
   "/generate",
   validateAccessCodeRequest,
   async (req: Request, res: Response) => {
-    const { guestName, timeLimit } = req.body;
+    const { guestName, timeLimit, tenantId } = req.body;
 
     try {
       const randomKey = Math.floor(100000 + Math.random() * 900000).toString();
+      const hashedCode = crypto
+        .createHash("sha256")
+        .update(randomKey)
+        .digest("hex");
 
       const accessCode = {
-        code: randomKey,
-        guestName,
-        timeLimit,
+        tenantId,
+        type: "guest" as "guest",
+        hashedCode,
+        expiresAt: new Date(Date.now() + Number(timeLimit) * 60 * 1000),
         isActive: true,
         createdAt: new Date(),
       };
