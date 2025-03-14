@@ -3,9 +3,11 @@ import cookieParser from "cookie-parser";
 import config from "./config/config";
 import morgan from "morgan"; // Http request logger, help debug
 import cors from "cors";
+import { requiresAuthentication } from "./middleware/authMiddleware";
 
 // Import routes
 import authRoutes from "./routes/auth";
+import leaseRoutes from "./routes/leases";
 import { complaintRoutes } from "./routes/complaints";
 
 // Configuration
@@ -31,6 +33,7 @@ app.use(cors({ origin: "http://localhost:5173" }));
 // Use routes
 app.use("/auth", authRoutes);
 app.use("/complaints", complaintRoutes);
+app.use("/leases", requiresAuthentication, leaseRoutes);
 
 // Listener
 app.listen(PORT, HOST, () => {
