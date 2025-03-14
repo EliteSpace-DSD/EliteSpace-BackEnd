@@ -65,3 +65,10 @@ export async function verifyOtp({ type, token_hash, req, res }: VerifyOtpParams)
 
     return error;
 };
+
+export async function signout() {
+    // Add {scope: 'local'} as an arg for signOut() to only logout from that one client
+    // by default, all active sessions are terminated.
+    const { error } = await authClient.auth.signOut();
+    return error;
+};
