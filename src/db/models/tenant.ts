@@ -20,6 +20,34 @@ export const getTenantById = async (tenantId: string) => {
     }
 };
 
+export const getTenantByUserId = async (userId: string) => {
+    try {
+        const result = await db.query.tenants.findFirst({
+            where: eq(tenants.userId, userId),
+            columns: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+            },
+            with: {
+                unitTenants: {
+                    columns: {
+                        id: true,
+                    },
+                    with: {
+                        leases: true
+                    }
+                }
+            }
+        });
+        return result;
+
+    } catch (error) {
+        return null;
+    }
+};
+
 export const getTenantByEmail = async (tenantEmail: string) => {
     try {
         const result = await db.select().from(tenants).where(eq(
