@@ -8,7 +8,7 @@ if (!process.env.GEMINI_API_KEY) {
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-const prompt: string = "Explain how AI works";
+const prompt: string = "create a short poem";
 
 export const runGemini = async () => {
   try {
