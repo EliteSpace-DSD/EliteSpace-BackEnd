@@ -1,11 +1,13 @@
-import express, {Request, Response} from 'express';
+import express, { Request, Response } from 'express';
 import cookieParser from 'cookie-parser';
 import config from "./config/config";
 import morgan from 'morgan'; // Http request logger, help debug
 import cors from 'cors';
+import { requiresAuthentication } from './middleware/authMiddleware';
 
 // Import routes
 import authRoutes from "./routes/auth";
+import leaseRoutes from "./routes/leases";
 
 // Configuration
 const app = express();
@@ -16,9 +18,9 @@ const PORT: number = config.PORT;
 // Ex: req.user will have info from users table, NOT from tenants table.
 declare module "express-serve-static-core" {
     interface Request {
-      user?: any;
+        user?: any;
     }
-  }
+}
 
 app.use(express.json());
 app.use(morgan("common"));
@@ -29,6 +31,7 @@ app.use(cors({origin: "http://localhost:5173"}));
 
 // Use routes
 app.use('/auth', authRoutes);
+app.use('/leases', requiresAuthentication, leaseRoutes);
 
 // Listener
 app.listen(PORT, HOST, () => {
