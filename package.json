@@ -17,10 +17,10 @@
   "license": "ISC",
   "dependencies": {
     "@google/generative-ai": "^0.24.0",
-    "@supabase/supabase-js": "^2.49.1",
     "@supabase/ssr": "^0.5.2",
-    "@google/generative-ai": "^0.24.0",
     "@supabase/supabase-js": "^2.49.1",
+    "@types/cookie-parser": "^1.4.8",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "drizzle-orm": "^0.39.3",
