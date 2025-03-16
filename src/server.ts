@@ -30,8 +30,6 @@ app.use(cookieParser()); // Enables reading cookies from req.cookies
 // Allows request from frontend
 app.use(cors({ origin: "http://localhost:5173" }));
 
-//Allows frontend to communicate with backend
-app.use(cors({ origin: "http://localhost:5173" }));
 // Use routes
 app.use("/auth", authRoutes);
 app.use("/complaints", complaintRoutes);
