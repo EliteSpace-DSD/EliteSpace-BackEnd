@@ -89,13 +89,13 @@ export const getTenantInfoByUserId = async (userId: string) => {
     try {
         const result = await db
             .select({
-                user_id: tenants.user_id,
+                userId: tenants.userId,
                 firstName: tenants.firstName,
                 lastName: tenants.lastName,
                 email: tenants.email,
             })
             .from(tenants)
-            .where(eq(tenants.user_id, userId));
+            .where(eq(tenants.userId, userId));
 
         return result[0]; // Returns the first result as an object.
     } catch (error) {
