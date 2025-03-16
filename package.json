@@ -16,6 +16,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google/generative-ai": "^0.24.0",
+    "@supabase/supabase-js": "^2.49.1",
     "@supabase/ssr": "^0.5.2",
     "@google/generative-ai": "^0.24.0",
     "@supabase/supabase-js": "^2.49.1",
