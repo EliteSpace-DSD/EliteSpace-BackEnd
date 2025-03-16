@@ -4,9 +4,7 @@ import { getPackagesByTenantId } from '../db/models/packages'
 import { getTenantInfoByUserId } from '../db/models/tenant'
 const router = express.Router();
 
-router.get('/', 
-    requiresAuthentication,
-    async (req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response) => {
         try {
             const authUserId = req.user.userId;
             //NOTE: wont be getting tenantId if i introduce it to middleware
