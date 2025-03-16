@@ -20,8 +20,8 @@ app.use(cors({ origin: "http://localhost:5173" }));
 
 // Use routes
 app.use("/auth", authRoutes);
-
 app.use("/complaints", complaintRoutes);
+
 // Listener
 app.listen(PORT, HOST, () => {
   console.log(`Elite Space App is listening on port ${PORT} of ${HOST}!`);
