@@ -8,7 +8,7 @@ import { requiresAuthentication } from "./middleware/authMiddleware";
 // Import routes
 import authRoutes from "./routes/auth";
 import leaseRoutes from "./routes/leases";
-import accessCodes from "./routes/accessCodes";
+import accessCodesRoutes from "./routes/accessCodes";
 
 // Configuration
 const app = express();
@@ -33,7 +33,7 @@ app.use(cors({ origin: "http://localhost:5173" }));
 // Use routes
 app.use("/auth", authRoutes);
 app.use("/leases", requiresAuthentication, leaseRoutes);
-app.use("/access-codes", requiresAuthentication, accessCodes);
+app.use("/accessCodes", accessCodesRoutes);
 
 // Listener
 app.listen(PORT, HOST, () => {
