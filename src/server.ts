@@ -2,7 +2,6 @@ import express, { Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import config from "./config/config";
 import morgan from "morgan"; // Http request logger, help debug
-import cors from "cors";
 import { requiresAuthentication } from "./middleware/authMiddleware";
 
 // Import routes
