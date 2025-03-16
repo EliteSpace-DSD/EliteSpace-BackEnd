@@ -18,11 +18,9 @@ router.post("/register", async (req: Request, res: Response) => {
     const isExistingTenant = await getTenantByEmail(email);
 
     if (!isExistingTenant) {
-      res
-        .status(404)
-        .json({
-          message: "Unable to register account. Contact Elite Space Leasing.",
-        });
+      res.status(404).json({
+        message: "Unable to register account. Contact Elite Space Leasing.",
+      });
       return;
     }
 
@@ -148,6 +146,7 @@ router.post("/signin", async (req: Request, res: Response) => {
   }
 });
 
+router.post("");
 router.post("/signout", async (req: Request, res: Response) => {
   try {
     const error = await signout();
@@ -165,3 +164,4 @@ router.post("/signout", async (req: Request, res: Response) => {
 });
 
 export default router;
+

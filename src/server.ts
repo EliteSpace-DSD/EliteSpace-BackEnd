@@ -8,6 +8,7 @@ import { requiresAuthentication } from "./middleware/authMiddleware";
 // Import routes
 import authRoutes from "./routes/auth";
 import leaseRoutes from "./routes/leases";
+import { complaintRoutes } from "./routes/complaints";
 import accessCodesRoutes from "./routes/accessCodes";
 
 // Configuration
@@ -32,6 +33,8 @@ app.use(cors({ origin: "http://localhost:5173" }));
 
 // Use routes
 app.use("/auth", authRoutes);
+app.use("/leases", requiresAuthentication, leaseRoutes);
+app.use("/complaints", complaintRoutes);
 app.use("/leases", requiresAuthentication, leaseRoutes);
 app.use("/accessCodes", accessCodesRoutes);
 
