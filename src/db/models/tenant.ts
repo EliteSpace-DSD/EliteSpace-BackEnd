@@ -89,7 +89,7 @@ export const getTenantInfoByUserId = async (userId: string) => {
     try {
         const result = await db
             .select({
-                userId: tenants.userId,
+                id: tenants.id, 
                 firstName: tenants.firstName,
                 lastName: tenants.lastName,
                 email: tenants.email,
@@ -97,9 +97,9 @@ export const getTenantInfoByUserId = async (userId: string) => {
             .from(tenants)
             .where(eq(tenants.userId, userId));
 
-        return result[0]; // Returns the first result as an object.
+        return result[0] ?? null;
     } catch (error) {
-        console.error(error); // Log the error for debugging.
+        console.error("Error fetching tenant info:", error); // More descriptive error log
         return null;
     }
 };
