@@ -84,3 +84,22 @@ export const deleteTenant = async (tenantId: string) => {
         return { success: false };
     }
 };
+
+export const getTenantInfoByUserId = async (userId: string) => {
+    try {
+        const result = await db
+            .select({
+                user_id: tenants.user_id,
+                firstName: tenants.firstName,
+                lastName: tenants.lastName,
+                email: tenants.email,
+            })
+            .from(tenants)
+            .where(eq(tenants.user_id, userId));
+
+        return result[0]; // Returns the first result as an object.
+    } catch (error) {
+        console.error(error); // Log the error for debugging.
+        return null;
+    }
+};
