@@ -1,6 +1,6 @@
 import { db } from '../index';
-import { eq, and } from 'drizzle-orm';
-import { packages, PackageInsertType } from '../schema';
+import { eq, and, asc } from 'drizzle-orm';
+import { packages, PackageInsertType, PackageStatus } from '../schema';
 
 export const createPackage = async (packageDetails: PackageInsertType) => {
     try {
@@ -29,6 +29,7 @@ export const getPackagesByTenantId = async (tenantId: string) => {
                 eq(packages.tenantId, tenantId),
                 eq(packages.status, 'delivered')
             ),
+            orderBy: asc(packages.deliveryTime),
             with: {
                 smartLocker: {
                     columns: {
@@ -42,5 +43,20 @@ export const getPackagesByTenantId = async (tenantId: string) => {
     } catch (error) {
         console.error(error);
         return [];
+    }
+};
+
+export const updatePackageStatus = async (packageId: string, status: PackageStatus) => {
+    try {
+        const result = await db
+            .update(packages)
+            .set({ status }) // Ensures type safety from PackageStatus
+            .where(eq(packages.id, packageId))
+            .returning();
+
+        return result[0] || null;
+    } catch (error) {
+        console.error("Error updating package status:", error);
+        return null;
     }
 };
