@@ -49,10 +49,7 @@ const createTwoSeedPackages = async (twoAvailableLockers: string[], tenantId: st
     };
 
     await createPackage(packageOneDetails);
-    
-    
-    // await createPackage();
-    // await createPackage();
+    await createPackage(packageTwoDetails);
 };
 
 
