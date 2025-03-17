@@ -50,7 +50,7 @@ export const updatePackageStatus = async (packageId: string, status: PackageStat
     try {
         const result = await db
             .update(packages)
-            .set({ status }) // Ensures type safety from PackageStatus
+            .set({ status })
             .where(eq(packages.id, packageId))
             .returning();
 
