@@ -60,3 +60,14 @@ export const updatePackageStatus = async (packageId: string, status: PackageStat
         return null;
     }
 };
+
+export const removeAllPackages = async () => {
+    try {
+        const result = await db.delete(packages);
+        return result; // Return the number of deleted rows (if applicable)
+    } catch (error) {
+        console.error("Error removing all packages:", error);
+        return null;
+    }
+};
+
