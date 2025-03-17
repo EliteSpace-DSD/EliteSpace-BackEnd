@@ -1,21 +1,3 @@
-/*
-
-Description:
-- With the earlier delivered package on the top, that one will be
-used for demo purpose, pretending that we've picked up
-the package.
-
-1. query and get the earlier package from the tenant.
-(used email to get tenant id)
-
-2. use tenant id to get all his/her packages, in ascending order
-on date time, the earlest paackage will be on the top, LIMIT 1.
-(this will get the earliest delivered package's package id)
-
-3. with package id, use it to update package status as "retrieved"
-
-*/
-
 import { getTenantByEmail } from "../../db/models/tenant";
 import { getPackagesByTenantId, updatePackageStatus } from "../../db/models/packages";
 import {updateSmartLockerStatus} from "../../db/models/smartLocker";
