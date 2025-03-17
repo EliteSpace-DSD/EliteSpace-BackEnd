@@ -18,6 +18,7 @@ on date time, the earlest paackage will be on the top, LIMIT 1.
 
 import { getTenantByEmail } from "../../db/models/tenant";
 import { getPackagesByTenantId, updatePackageStatus } from "../../db/models/packages";
+import {updateSmartLockerStatus} from "../../db/models/smartLocker";
 import {client} from "../../db/index";
 import dotenv from 'dotenv';
 dotenv.config();
@@ -58,14 +59,20 @@ const main = async () => {
 
     const STATUS = "retrieved";
     const pickUpPackageId = packages[0].id;
-    const result = await updatePackageStatus(pickUpPackageId, STATUS);
-    if (!result) {
+    const updatedPackage = await updatePackageStatus(pickUpPackageId, STATUS);
+    if (!updatedPackage) {
         console.error("Unable to update package status");
         await client.end();
         return;
     }
 
-    console.log("Package pickup status update complete!");
+    if (updatedPackage.lockerId) {
+        await updateSmartLockerStatus(updatedPackage.lockerId, false);
+        console.log("Package pickup status update complete!");
+    } else {
+        console.error("Unable to update locker status");
+    }
+    
     await client.end();
 };
 
