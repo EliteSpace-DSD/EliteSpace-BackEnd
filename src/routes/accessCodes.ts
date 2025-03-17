@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { createAccessCode } from "../db/models/accessCodes";
 import { validateAccessCodeRequest } from "../middleware/validateRequest";
 import crypto from "crypto";
+
 const router = express.Router();
 
 router.post(
@@ -12,6 +13,7 @@ router.post(
 
     try {
       const randomKey = Math.floor(100000 + Math.random() * 900000).toString();
+
       const hashedCode = crypto
         .createHash("sha256")
         .update(randomKey)
@@ -29,7 +31,9 @@ router.post(
       const result = await createAccessCode(accessCode);
 
       if (result) {
-        res.status(201).json({ accessCode: result });
+        res
+          .status(201)
+          .json({ accessCode: { ...result, unhashedCode: randomKey } });
       } else {
         res.status(500).json({ error: "Failed to create access code" });
       }
