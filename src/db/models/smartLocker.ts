@@ -68,3 +68,13 @@ export const deleteSmartLocker = async (id: string) => {
         return { success: false };
     }
 };
+
+export const resetAllSmartLockerStatus = async () => {
+    try {
+        const result = await db.update(smartLockers).set({ isOccupied: false });
+        return { success: true, updatedRows: result };
+    } catch (error) {
+        console.error("Error resetting smart locker statuses:", error);
+        return { success: false };
+    }
+};
