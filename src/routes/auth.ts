@@ -162,6 +162,8 @@ router.post("/signout", async (req: Request, res: Response) => {
     return;
   }
 });
+router.get("/reset-test", (req: Request, res: Response) => {
+  res.redirect("http://localhost:5173/update-password");
+});
 
 export default router;
-
