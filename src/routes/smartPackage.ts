@@ -1,7 +1,5 @@
 import express, { Request, Response } from 'express';
-import { requiresAuthentication } from '../middleware/authMiddleware';
-import { getPackagesByTenantId } from '../db/models/packages'
-import { getTenantInfoByUserId } from '../db/models/tenant'
+import { getPackagesByTenantId, getPackageById } from '../db/models/packages'
 const router = express.Router();
 
 export interface Package {
@@ -36,6 +34,22 @@ router.get('/', async (req: Request, res: Response) => {
             res.status(500).json({ message: 'Server error' });
             return;
         }
+});
+
+router.get('/:packageId', async (req: Request, res: Response) => {
+    const packageId = req.params.packageId;
+    try {
+        const returnedPackage = await getPackageById(packageId);
+        if (!returnedPackage || !returnedPackage.lockerCode) {
+            res.status(400).json({message: "Invalid package id"});
+            return;
+        }
+
+        res.status(200).json({code: returnedPackage.lockerCode});
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+        return;
+    }
 });
 
 export default router;
