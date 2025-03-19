@@ -39,7 +39,7 @@ const createTwoSeedPackages = async (threeAvailableLockers: string[], tenantId: 
         tenantId: tenantId,
         lockerId: threeAvailableLockers[0],
         lockerCode: '8e3K9s',
-        status: 'delivered' as 'delivered' | 'retrieved',
+        status: 'retrieved' as 'delivered' | 'retrieved',
         deliveryTime: timeStampOne 
     };
 
@@ -55,7 +55,7 @@ const createTwoSeedPackages = async (threeAvailableLockers: string[], tenantId: 
         tenantId: tenantId,
         lockerId: threeAvailableLockers[2],
         lockerCode: 'ys3ldZ',
-        status: 'retrieved' as 'delivered' | 'retrieved',
+        status: 'delivered' as 'delivered' | 'retrieved',
         deliveryTime: timeStampThree 
     };
 
