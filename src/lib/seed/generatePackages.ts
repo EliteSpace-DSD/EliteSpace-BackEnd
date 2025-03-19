@@ -22,19 +22,22 @@ const getTenantIdViaEmail = async () => {
     }    
 }
 
-const createTwoSeedPackages = async (twoAvailableLockers: string[], tenantId: string) => {
-    for (let lockerId of twoAvailableLockers) {
+const createTwoSeedPackages = async (threeAvailableLockers: string[], tenantId: string) => {
+    for (let lockerId of threeAvailableLockers) {
         await updateSmartLockerStatus(lockerId, true);
     }
 
     const timeStampOne = new Date(); // Current date and time
     const timeStampTwo = new Date(); // Current date and time
+    const timeStampThree = new Date(); // Current date and time
+
     // Subtract 5 hours
     timeStampOne.setHours(timeStampOne.getHours() - 5);
+    timeStampThree.setHours(timeStampThree.getHours() - 10);
     
     const packageOneDetails = {
         tenantId: tenantId,
-        lockerId: twoAvailableLockers[0],
+        lockerId: threeAvailableLockers[0],
         lockerCode: '8e3K9s',
         status: 'delivered' as 'delivered' | 'retrieved',
         deliveryTime: timeStampOne 
@@ -42,14 +45,23 @@ const createTwoSeedPackages = async (twoAvailableLockers: string[], tenantId: st
 
     const packageTwoDetails = {
         tenantId: tenantId,
-        lockerId: twoAvailableLockers[1],
+        lockerId: threeAvailableLockers[1],
         lockerCode: '0zk238',
         status: 'delivered' as 'delivered' | 'retrieved',
         deliveryTime: timeStampTwo 
     };
 
+    const packageThreeDetails = {
+        tenantId: tenantId,
+        lockerId: threeAvailableLockers[2],
+        lockerCode: 'ys3ldZ',
+        status: 'retrieved' as 'delivered' | 'retrieved',
+        deliveryTime: timeStampThree 
+    };
+
     await createPackage(packageOneDetails);
     await createPackage(packageTwoDetails);
+    await createPackage(packageThreeDetails);
 };
 
 
@@ -66,9 +78,8 @@ const main = async () => {
             console.log("Less than 2 lockers left, unable to create seed data for 2 packages");
         } else {
         
-            const twoAvailableLockers = [availableLockers[0].id, availableLockers[1].id]
-            console.log(twoAvailableLockers);
-            await createTwoSeedPackages(twoAvailableLockers, tenantId);
+            const threeAvailableLockers = [availableLockers[0].id, availableLockers[1].id, availableLockers[2].id]
+            await createTwoSeedPackages(threeAvailableLockers, tenantId);
         }
         
     }
