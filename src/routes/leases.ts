@@ -19,7 +19,7 @@ router.get('/view', async (req: Request, res: Response) => {
     });
 
     if (!renewalLease.length) {
-        res.json({ message: 'No pending renewals.' });
+        res.status(200).json({ message: 'No pending renewals.' });
         return;
     }
 
