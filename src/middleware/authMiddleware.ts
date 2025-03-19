@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import {authClient} from '../authClient';
+import { getTenantInfoByUserId } from '../db/models/tenant'
 
 export const requiresAuthentication =  async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -21,6 +22,20 @@ export const requiresAuthentication =  async (req: Request, res: Response, next:
             userId: data.user.id, 
             email: data.user.email
         };
+
+        const tenantInfo = await getTenantInfoByUserId(data.user.id);
+        if (!tenantInfo) {
+            res.status(401).json({message: "unable to find tenant in query"});
+            return;          
+        }
+
+        req.tenant = {
+            id: tenantInfo.id,       
+            firstName: tenantInfo.firstName, 
+            lastName: tenantInfo.lastName,   
+            email: tenantInfo.email          
+        };
+
         next();
     } catch (err) {
         console.error('Auth middleware error:', err)        
