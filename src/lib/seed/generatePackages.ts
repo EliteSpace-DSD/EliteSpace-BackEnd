@@ -27,8 +27,8 @@ const createTwoSeedPackages = async (threeAvailableLockers: string[], tenantId: 
         await updateSmartLockerStatus(lockerId, true);
     }
 
-    const timeStampOne = new Date(); // Current date and time
     const timeStampTwo = new Date(); // Current date and time
+    const timeStampOne = new Date(); // Current date and time
     const timeStampThree = new Date(); // Current date and time
 
     // Subtract 5 hours
@@ -59,9 +59,9 @@ const createTwoSeedPackages = async (threeAvailableLockers: string[], tenantId: 
         deliveryTime: timeStampThree 
     };
 
-    await createPackage(packageOneDetails);
-    await createPackage(packageTwoDetails);
     await createPackage(packageThreeDetails);
+    await createPackage(packageOneDetails);
+    await createPackage(packageTwoDetails);  
 };
 
 
