@@ -1,5 +1,5 @@
 import { db } from '../index';
-import { eq, and, asc } from 'drizzle-orm';
+import { eq, and, asc, sql } from 'drizzle-orm';
 import { packages, PackageInsertType, PackageStatus } from '../schema';
 
 export const createPackage = async (packageDetails: PackageInsertType) => {
@@ -26,10 +26,12 @@ export const getPackagesByTenantId = async (tenantId: string) => {
     try {
         const result = await db.query.packages.findMany({
             where: and(
-                eq(packages.tenantId, tenantId),
-                eq(packages.status, 'delivered')
+                eq(packages.tenantId, tenantId)
             ),
-            orderBy: asc(packages.deliveryTime),
+            orderBy: [
+                sql`CASE WHEN ${packages.status} = 'delivered' THEN 0 ELSE 1 END ASC`,
+                asc(packages.deliveryTime)
+            ],
             with: {
                 smartLocker: {
                     columns: {
