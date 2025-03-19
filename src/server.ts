@@ -2,14 +2,15 @@ import express, { Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import config from "./config/config";
 import morgan from "morgan"; // Http request logger, help debug
+import cors from "cors";
 import { requiresAuthentication } from "./middleware/authMiddleware";
 
 // Import routes
 import authRoutes from "./routes/auth";
 import leaseRoutes from "./routes/leases";
 import { complaintRoutes } from "./routes/complaints";
+import accessCodesRoutes from "./routes/accessCodes";
 
-import cors from "cors";
 // Configuration
 const app = express();
 const HOST: string = config.HOST;
@@ -28,12 +29,14 @@ app.use(morgan("common"));
 app.use(cookieParser()); // Enables reading cookies from req.cookies
 
 // Allows request from frontend
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
 // Use routes
 app.use("/auth", authRoutes);
+app.use("/leases", requiresAuthentication, leaseRoutes);
 app.use("/complaints", complaintRoutes);
 app.use("/leases", requiresAuthentication, leaseRoutes);
+app.use("/accessCodes", accessCodesRoutes);
 
 // Listener
 app.listen(PORT, HOST, () => {
