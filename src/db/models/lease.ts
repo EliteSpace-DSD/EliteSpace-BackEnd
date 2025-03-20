@@ -77,3 +77,13 @@ export const deleteLease = async (leaseId: string) => {
         return { success: false };
     }
 };
+
+export const updateLease = async (leaseId: string, lease: Partial<LeaseInsertType>) => {
+    try {
+        const result = await db.update(leases).set(lease).where(eq(leases.id, leaseId)).returning();
+        return result[0];
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};

@@ -1,6 +1,6 @@
 import { db } from '../index';
-import { eq, and } from 'drizzle-orm';
-import { packages, PackageInsertType } from '../schema';
+import { eq, and, asc, sql } from 'drizzle-orm';
+import { packages, PackageInsertType, PackageStatus } from '../schema';
 
 export const createPackage = async (packageDetails: PackageInsertType) => {
     try {
@@ -26,9 +26,12 @@ export const getPackagesByTenantId = async (tenantId: string) => {
     try {
         const result = await db.query.packages.findMany({
             where: and(
-                eq(packages.tenantId, tenantId),
-                eq(packages.status, 'delivered')
+                eq(packages.tenantId, tenantId)
             ),
+            orderBy: [
+                sql`CASE WHEN ${packages.status} = 'delivered' THEN 0 ELSE 1 END ASC`,
+                asc(packages.deliveryTime)
+            ],
             with: {
                 smartLocker: {
                     columns: {
@@ -44,3 +47,29 @@ export const getPackagesByTenantId = async (tenantId: string) => {
         return [];
     }
 };
+
+export const updatePackageStatus = async (packageId: string, status: PackageStatus) => {
+    try {
+        const result = await db
+            .update(packages)
+            .set({ status })
+            .where(eq(packages.id, packageId))
+            .returning();
+
+        return result[0] || null;
+    } catch (error) {
+        console.error("Error updating package status:", error);
+        return null;
+    }
+};
+
+export const removeAllPackages = async () => {
+    try {
+        const result = await db.delete(packages);
+        return result; // Return the number of deleted rows (if applicable)
+    } catch (error) {
+        console.error("Error removing all packages:", error);
+        return null;
+    }
+};
+

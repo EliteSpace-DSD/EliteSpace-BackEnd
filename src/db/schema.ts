@@ -57,8 +57,7 @@ export const tenants = pgTable('tenants', {
     dob: date('dob'),
     email: varchar('email', { length: 255 }).notNull().unique(),
     phone: text('phone'),
-    user_id: uuid('user_id'),
-    passwordHash: varchar('password_hash', { length: 255 }).notNull(),
+    userId: uuid('user_id'),
     ...timestamps
 });
 
@@ -81,6 +80,7 @@ export const leases = pgTable('leases', {
     monthlyRate: decimal('monthly_rate', { precision: 10, scale: 2 }).notNull(),
     document: text('document'),
     status: text('status').notNull(),
+    signature: boolean('signature').default(false),
     signedAt: timestamp('signed_at', { withTimezone: true, mode: 'date' }),
     ...timestamps
 });
@@ -214,6 +214,13 @@ export const unitTenantsRelations = relations(unitTenants, ({ one, many }) => ({
         references: [units.id],
     }),
     leases: many(leases),
+}));
+
+export const leasesRelations = relations(leases, ({ one }) => ({
+    unitTenant: one(unitTenants, {
+        fields: [leases.unitTenantsId],
+        references: [unitTenants.id],
+    }),
 }));
 
 export const maintenanceRequestsRelations = relations(maintenanceRequests, ({ one }) => ({
