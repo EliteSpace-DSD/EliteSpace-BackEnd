@@ -9,8 +9,10 @@ import { requiresAuthentication } from "./middleware/authMiddleware";
 import authRoutes from "./routes/auth";
 import leaseRoutes from "./routes/leases";
 import { complaintRoutes } from "./routes/complaints";
+import parkingRoutes from "./routes/parking";
 import accessCodesRoutes from "./routes/accessCodes";
 import smartPackgeRoutes from "./routes/smartPackage";
+
 
 // Configuration
 const app = express();
@@ -37,6 +39,7 @@ app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 // Use routes
 app.use("/auth", authRoutes);
 app.use("/leases", requiresAuthentication, leaseRoutes);
+app.use("/parking", requiresAuthentication, parkingRoutes);
 app.use("/complaints", complaintRoutes);
 app.use("/accessCodes", accessCodesRoutes);
 app.use('/smartpackage', requiresAuthentication, smartPackgeRoutes);
