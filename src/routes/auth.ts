@@ -1,20 +1,12 @@
 import express, { Request, Response } from "express";
 import { getTenantByEmail } from "../db/models/tenant";
-import {
-  initiatePasswordReset,
-  linkUserToTenant,
-  signInWithEmail,
-  signUpNewUser,
-  updatePassword,
-  verifyOtp,
-  signout,
-} from "../authClient/authFunctions";
+import { initiatePasswordReset, linkUserToTenant, signInWithEmail, signUpNewUser, updatePassword, verifyOtp, signout } from "../authClient/authFunctions";
 
 const router = express.Router();
 
 router.post("/register", async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, phone, dob } = req.body;
     const isExistingTenant = await getTenantByEmail(email);
 
     if (!isExistingTenant) {
@@ -27,16 +19,13 @@ router.post("/register", async (req: Request, res: Response) => {
     const { data, error } = await signUpNewUser(email, password);
 
     if (error) {
-      const errorMsg =
-        error.code === "weak_password"
-          ? "Password not strong enough. Must be atleast 6 characters."
-          : "Error signing up";
+      const errorMsg = error.code === "weak_password" ? "Password not strong enough. Must be atleast 6 characters." : "Error signing up";
       res.status(500).json({ message: errorMsg });
       return;
     }
 
     if (data.user) {
-      const { error: dbError } = await linkUserToTenant(email, data.user.id);
+      const { error: dbError } = await linkUserToTenant(email, data.user.id, phone, dob);
 
       if (dbError) {
         res.status(500).json({ message: "Server error" });
@@ -74,9 +63,7 @@ router.post("/update-password", async (req: Request, res: Response) => {
 
   if (error) {
     console.log(error);
-    res
-      .status(400)
-      .json({ message: "Not authorized. Unable to reset password." });
+    res.status(400).json({ message: "Not authorized. Unable to reset password." });
     return;
   }
 
@@ -91,11 +78,7 @@ router.get("/confirm", async function (req: Request, res: Response) {
   /*
     query parameters are typed in Express as string | ParsedQs (when query param is an obj) | (string | ParsedQs[]). This last one represents an array of those types. These values are passed to to verifyOtp, which expects only a string type that matches specific enums. So there is a type mismatch. Using type narrowing here to ensure that the
     variables are the expected type before calling verifyOtp to prevent crashing the server*/
-  if (
-    typeof token_hash === "string" &&
-    typeof type === "string" &&
-    type === "recovery"
-  ) {
+  if (typeof token_hash === "string" && typeof type === "string" && type === "recovery") {
     const error = await verifyOtp({ type, token_hash, req, res });
 
     if (!error) {
@@ -117,9 +100,7 @@ router.post("/signin", async (req: Request, res: Response) => {
     const { data, error } = await signInWithEmail(email, password);
 
     if (error) {
-      res
-        .status(401)
-        .json({ message: "Invalid email or password. Please try again." });
+      res.status(401).json({ message: "Invalid email or password. Please try again." });
       return;
     }
 
