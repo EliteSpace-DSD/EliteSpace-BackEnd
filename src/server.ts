@@ -32,7 +32,7 @@ app.use(morgan("common"));
 app.use(cookieParser()); // Enables reading cookies from req.cookies
 
 // Allows request from frontend
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(cors({ origin: "https://elitespace.netlify.app", credentials: true }));
 
 // Use routes
 app.use("/auth", authRoutes);
