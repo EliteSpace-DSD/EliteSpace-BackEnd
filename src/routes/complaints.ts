@@ -10,14 +10,15 @@ router.post(
   async (req: Request, res: Response) => {
     try {
       const { selectedIssue, extraDetails } = req.body;
+      // const tenantId = req.tenant
       // //Pass full object to AI
-      const tenantId = req.user.userId;
-      const priority = await runGemini(extraDetails);
+      console.log(selectedIssue, extraDetails);
+      const priority = await runGemini(extraDetails, selectedIssue);
+      console.log("Priority:", priority);
       const fullComplaint = {
         issueType: "other" as "other" | "noise",
         description: extraDetails,
-        priority: "low" as "low" | "medium" | "high",
-        tenantId,
+        priority: priority as "low" | "medium" | "high",
         //add tenantId here
       };
       const submittedComplaint = await createComplaint(fullComplaint);
