@@ -84,3 +84,22 @@ export const deleteTenant = async (tenantId: string) => {
         return { success: false };
     }
 };
+
+export const getTenantInfoByUserId = async (userId: string) => {
+    try {
+        const result = await db
+            .select({
+                id: tenants.id, 
+                firstName: tenants.firstName,
+                lastName: tenants.lastName,
+                email: tenants.email,
+            })
+            .from(tenants)
+            .where(eq(tenants.userId, userId));
+
+        return result[0] ?? null;
+    } catch (error) {
+        console.error("Error fetching tenant info:", error); // More descriptive error log
+        return null;
+    }
+};

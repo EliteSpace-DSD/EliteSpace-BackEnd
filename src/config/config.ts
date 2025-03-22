@@ -1,4 +1,6 @@
+import 'dotenv/config'
+
 export default {
-  HOST: "localhost",
-  PORT: 3000,
+  HOST: process.env.HOST || "localhost",
+  PORT: Number(process.env.PORT) || 3000,
 };
