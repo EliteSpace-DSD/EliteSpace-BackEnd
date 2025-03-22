@@ -10,7 +10,7 @@ import authRoutes from "./routes/auth";
 import leaseRoutes from "./routes/leases";
 import { complaintRoutes } from "./routes/complaints";
 import accessCodesRoutes from "./routes/accessCodes";
-import smartPackgeRoutes from "./routes/smartPackage";
+import smartPackageRoutes from "./routes/smartPackage";
 
 // Configuration
 const app = express();
@@ -39,7 +39,7 @@ app.use("/auth", authRoutes);
 app.use("/leases", requiresAuthentication, leaseRoutes);
 app.use("/complaints", complaintRoutes);
 app.use("/accessCodes", accessCodesRoutes);
-app.use('/smartpackage', requiresAuthentication, smartPackgeRoutes);
+app.use('/smartpackage', requiresAuthentication, smartPackageRoutes);
 
 // Listener
 app.listen(PORT, HOST, () => {
