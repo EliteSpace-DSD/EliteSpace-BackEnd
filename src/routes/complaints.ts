@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { runGemini } from "../ai/gemini";
 import { createComplaint } from "../db/models/complaint";
 import { requiresAuthentication } from "../middleware/authMiddleware";
+import { priorityEnum } from "../db/schema";
 const router = express.Router();
 
 router.post(
@@ -12,13 +13,16 @@ router.post(
       const { selectedIssue, extraDetails } = req.body;
       // const tenantId = req.tenant
       // //Pass full object to AI
-      console.log(selectedIssue, extraDetails);
-      const priority = await runGemini(extraDetails, selectedIssue);
+      const result = await runGemini(extraDetails, selectedIssue);
+      if (!result) {
+        throw new Error("runGemini returned undefined");
+      }
+      const { summary, priority } = result;
       console.log("Priority:", priority);
       const fullComplaint = {
         issueType: "other" as "other" | "noise",
-        description: extraDetails,
-        priority: priority as "low" | "medium" | "high",
+        description: summary,
+        priority: priority as (typeof priorityEnum.enumValues)[number],
         //add tenantId here
       };
       const submittedComplaint = await createComplaint(fullComplaint);
