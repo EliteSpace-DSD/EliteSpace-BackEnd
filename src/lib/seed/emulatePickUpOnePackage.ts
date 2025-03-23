@@ -1,7 +1,7 @@
 import { getTenantByEmail } from "../../db/models/tenant";
 import { getPackagesByTenantId, updatePackageStatus } from "../../db/models/packages";
 import {updateSmartLockerStatus} from "../../db/models/smartLocker";
-import {client} from "../../db/index";
+// import {client} from "../../db/index";
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -26,7 +26,7 @@ export const retrievePackage = async () => {
 
     if (!tenantId) {
         console.error("Non-existing tenant ID");
-        await client.end();
+        // await client.end();
         return;
     } 
 
@@ -34,7 +34,7 @@ export const retrievePackage = async () => {
 
     if (packages.length === 0) {
         console.error("No existing package!");
-        await client.end();
+        // await client.end();
         return;
     }
 
@@ -43,7 +43,7 @@ export const retrievePackage = async () => {
     const updatedPackage = await updatePackageStatus(pickUpPackageId, STATUS);
     if (!updatedPackage) {
         console.error("Unable to update package status");
-        await client.end();
+        // await client.end();
         return;
     }
 
@@ -54,5 +54,5 @@ export const retrievePackage = async () => {
         console.error("Unable to update locker status");
     }
     
-    await client.end();
+    // await client.end();
 };

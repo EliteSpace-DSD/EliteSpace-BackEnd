@@ -47,7 +47,7 @@ const createThreeSeedPackages = async (threeAvailableLockers: string[], tenantId
         tenantId: tenantId,
         lockerId: threeAvailableLockers[1],
         lockerCode: '0zk238',
-        status: 'delivered' as 'delivered' | 'retrieved',
+        status: 'retrieved' as 'delivered' | 'retrieved',
         deliveryTime: timeStampTwo 
     };
 
@@ -84,5 +84,5 @@ export const createPackages = async () => {
     }
 
 
-    await client.end();
+    // await client.end();
 }
