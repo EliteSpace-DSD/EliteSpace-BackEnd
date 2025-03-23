@@ -9,8 +9,10 @@ import { requiresAuthentication } from "./middleware/authMiddleware";
 import authRoutes from "./routes/auth";
 import leaseRoutes from "./routes/leases";
 import { complaintRoutes } from "./routes/complaints";
+import parkingRoutes from "./routes/parking";
 import accessCodesRoutes from "./routes/accessCodes";
 import smartPackageRoutes from "./routes/smartPackage";
+
 
 // Configuration
 const app = express();
@@ -33,7 +35,7 @@ app.use(cookieParser()); // Enables reading cookies from req.cookies
 
 // Allows request from frontend AND local
 app.use(cors({
-  origin: ["http://localhost:5173", "https://elitespace.netlify.app"],
+  origin: ["http://localhost:5173", "https://elitespace.netlify.app", "https://elitespace-dev.netlify.app"],
   credentials: true,
 }));
 
@@ -41,6 +43,7 @@ app.use(cors({
 // Use routes
 app.use("/auth", authRoutes);
 app.use("/leases", requiresAuthentication, leaseRoutes);
+app.use("/parking", requiresAuthentication, parkingRoutes);
 app.use("/complaints", complaintRoutes);
 app.use("/accessCodes", accessCodesRoutes);
 app.use('/smartpackage', requiresAuthentication, smartPackageRoutes);
