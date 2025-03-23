@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post("/register", async (req: Request, res: Response) => {
   try {
-    const { email, password, phone, dob } = req.body;
+    const { email, password, phone, dob, first_name } = req.body;
     const isExistingTenant = await getTenantByEmail(email);
 
     if (!isExistingTenant) {
@@ -16,7 +16,7 @@ router.post("/register", async (req: Request, res: Response) => {
       return;
     }
 
-    const { data, error } = await signUpNewUser(email, password);
+    const { data, error } = await signUpNewUser(email, password, first_name);
 
     if (error) {
       const errorMsg = error.code === "weak_password" ? "Password not strong enough. Must be atleast 6 characters." : "Error signing up";
