@@ -22,7 +22,7 @@ const getTenantIdViaEmail = async () => {
     }    
 }
 
-const createTwoSeedPackages = async (threeAvailableLockers: string[], tenantId: string) => {
+const createThreeSeedPackages = async (threeAvailableLockers: string[], tenantId: string) => {
     for (let lockerId of threeAvailableLockers) {
         await updateSmartLockerStatus(lockerId, true);
     }
@@ -65,21 +65,20 @@ const createTwoSeedPackages = async (threeAvailableLockers: string[], tenantId: 
 };
 
 
-const main = async () => {
-    const email = process.env.EMAIL;
-
+export const createPackages = async () => {
     const tenantId = await getTenantIdViaEmail();
     if (!tenantId) {
         console.error("None-existing tenant id");
     } else {
         // console.log(tenantId);
         let availableLockers = await getAllOpenSmartLockers();
-        if (availableLockers.length < 2) {
-            console.log("Less than 2 lockers left, unable to create seed data for 2 packages");
-        } else {
-        
+        const EXISTING_LOCKER_AMT = 5;
+        if (availableLockers.length !== EXISTING_LOCKER_AMT) {
+            console.log("There are lockers occupied, not going to generate packages");
+        } else {    
             const threeAvailableLockers = [availableLockers[0].id, availableLockers[1].id, availableLockers[2].id]
-            await createTwoSeedPackages(threeAvailableLockers, tenantId);
+            await createThreeSeedPackages(threeAvailableLockers, tenantId);
+            console.log("Three packages, creation complete!!");
         }
         
     }
@@ -87,5 +86,3 @@ const main = async () => {
 
     await client.end();
 }
-
-main();

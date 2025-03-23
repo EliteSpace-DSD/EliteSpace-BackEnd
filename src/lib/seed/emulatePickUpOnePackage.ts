@@ -21,8 +21,7 @@ const getTenantIdViaEmail = async () => {
     }    
 }
 
-const main = async () => {
-    const email = process.env.EMAIL;
+export const retrievePackage = async () => {
     const tenantId = await getTenantIdViaEmail();
 
     if (!tenantId) {
@@ -57,6 +56,3 @@ const main = async () => {
     
     await client.end();
 };
-
-
-main();
