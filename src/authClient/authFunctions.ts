@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { EmailOtpType } from "@supabase/supabase-js";
 import { authClient, newServerClient } from ".";
 
+const redirectURL = process.env.EMAIL_REDIRECT_URL;
+
 interface VerifyOtpParams {
   type: EmailOtpType;
   token_hash: string;
@@ -9,14 +11,14 @@ interface VerifyOtpParams {
   res: Response;
 }
 
-export async function signUpNewUser(email: string, password: string) {
-  const redirectURL = process.env.EMAIL_REDIRECT_URL;
+export async function signUpNewUser(email: string, password: string, userData: {first_name: string}) {
 
   const { data, error } = await authClient.auth.signUp({
     email: email,
     password: password,
     options: {
-      emailRedirectTo: redirectURL,
+      emailRedirectTo: `${redirectURL}?next=https://elitespace.netlify.app/login`,
+      data: userData, // passes first_name into Supabase .Data to be used in email configuration
     },
   });
 
@@ -39,7 +41,9 @@ export async function linkUserToTenant(email: string, authUserId: string, phone:
 }
 
 export async function initiatePasswordReset(email: string) {
-  const { data, error } = await authClient.auth.resetPasswordForEmail(email);
+  const { data, error } = await authClient.auth.resetPasswordForEmail(email, {
+    redirectTo: `${redirectURL}?next=https://elitespace.netlify.app/update-password`
+});
 
   return { data, error };
 }
