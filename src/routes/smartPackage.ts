@@ -40,12 +40,28 @@ router.get('/:packageId', async (req: Request, res: Response) => {
     const packageId = req.params.packageId;
     try {
         const returnedPackage = await getPackageById(packageId);
-        if (!returnedPackage || !returnedPackage.lockerCode) {
+
+        if (!returnedPackage) {
+            res.status(400).json({message: "Invalid package object"});
+            return;
+        }
+
+        if (!returnedPackage.lockerCode) {
             res.status(400).json({message: "Invalid package id"});
             return;
         }
 
-        res.status(200).json({code: returnedPackage.lockerCode});
+        if (!returnedPackage.deliveryTime) {
+            res.status(400).json({message: "No delivery time"});
+            return;
+        }
+
+        const responseData = {
+            code: returnedPackage.lockerCode, 
+            deliveryTime: returnedPackage.deliveryTime
+        };
+
+        res.status(200).json(responseData);
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
         return;
