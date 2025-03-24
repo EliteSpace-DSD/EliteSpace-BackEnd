@@ -207,7 +207,6 @@ export const locks = pgTable("locks", {
     mode: "date",
   }).defaultNow(),
 });
-
 // Inferred types for retrieval and insertion operations
 export type BuildingSelectType = typeof buildings.$inferSelect;
 export type BuildingInsertType = typeof buildings.$inferInsert;

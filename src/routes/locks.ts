@@ -30,7 +30,7 @@ router.get("/lock-state/:tenantId", async (req: Request, res: Response) => {
 
 // Update or insert lock state for a tenant
 router.post("/lock-state", async (req: Request, res: Response) => {
-  const { tenantId, tenantName, isLocked } = req.body;
+  const { tenantId = "guest", tenantName = "Guest", isLocked } = req.body;
 
   if (typeof isLocked !== "boolean") {
     res.status(400).json({ message: "Invalid isLocked value" });

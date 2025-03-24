@@ -9,7 +9,9 @@ import {
   verifyOtp,
   signout,
 } from "../authClient/authFunctions";
-
+import { tenants } from "../db/schema";
+import { eq } from "drizzle-orm";
+import { db } from "../db/index";
 const router = express.Router();
 
 router.post("/register", async (req: Request, res: Response) => {
@@ -124,23 +126,43 @@ router.post("/signin", async (req: Request, res: Response) => {
     }
 
     // Set session cookie (for persistence)
-    const { session } = data;
-    if (!session) {
-      res.status(500).json({ message: "failed to retrieve session." });
+    const { session, user } = data;
+    if (!session || !user) {
+      res.status(500).json({ message: "Failed to retrieve session or user." });
       return;
     }
 
-    // access token expires_in by default is 3600 seconds, * 1000 = 3600000 milliseconds = 1 hour
-    res.cookie("sb-access-token", session.access_token, {
-      httpOnly: true, //Prevents JS access
-      // secure: true, // only sent over HTTPS, set as true only in production
-      sameSite: "strict",
-      maxAge: session.expires_in * 1000,
+    // Fetch tenantId associated with the user
+    const tenantRecord = await db.query.tenants.findFirst({
+      where: eq(tenants.email, email), // Assuming email is unique in the tenants table
+      columns: {
+        id: true, // Fetch the tenantId
+      },
     });
 
-    res.status(200).json({ message: "Signed in successfully" });
+    if (!tenantRecord) {
+      res.status(404).json({ message: "Tenant not found for this user." });
+      return;
+    }
+
+    const tenantId = tenantRecord.id;
+
+    // Set session cookie
+    res.cookie("sb-access-token", session.access_token, {
+      httpOnly: true, // Prevents JS access
+      // secure: true, // Only sent over HTTPS, set as true only in production
+      sameSite: "strict",
+      maxAge: session.expires_in * 1000, // 1 hour
+    });
+
+    // Return success response with tenantId
+    res.status(200).json({
+      message: "Signed in successfully",
+      tenantId, // Include tenantId in the response
+    });
     return;
   } catch (error) {
+    console.error("Error during sign-in:", error);
     res.status(500).json({ message: "Server error" });
     return;
   }
