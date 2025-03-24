@@ -11,10 +11,11 @@ interface VerifyOtpParams {
   res: Response;
 }
 
-
-export async function signUpNewUser(email: string, password: string, userData: {first_name: string}) {
-
-
+export async function signUpNewUser(
+  email: string,
+  password: string,
+  first_name: string
+) {
   const { data, error } = await authClient.auth.signUp({
     email: email,
     password: password,
@@ -23,10 +24,9 @@ export async function signUpNewUser(email: string, password: string, userData: {
 
       data: {
         user_metadata: {
-          first_name
-        }
+          first_name,
+        },
       }, // passes first_name into Supabase .Data to be used in email configuration
-
     },
   });
 
@@ -42,16 +42,24 @@ export async function signInWithEmail(email: string, password: string) {
   return { data, error };
 }
 
-export async function linkUserToTenant(email: string, authUserId: string, phone: string, dob: string) {
-  const { data, error } = await authClient.from("tenants").update({ user_id: authUserId, phone: phone, dob: dob }).eq("email", email);
+export async function linkUserToTenant(
+  email: string,
+  authUserId: string,
+  phone: string,
+  dob: string
+) {
+  const { data, error } = await authClient
+    .from("tenants")
+    .update({ user_id: authUserId, phone: phone, dob: dob })
+    .eq("email", email);
   console.log(data);
   return { data, error };
 }
 
 export async function initiatePasswordReset(email: string) {
   const { data, error } = await authClient.auth.resetPasswordForEmail(email, {
-    redirectTo: `${redirectURL}?next=https://elitespace.netlify.app/update-password`
-});
+    redirectTo: `${redirectURL}?next=https://elitespace.netlify.app/update-password`,
+  });
 
   return { data, error };
 }
@@ -66,7 +74,12 @@ export async function updatePassword(req: Request, res: Response) {
   return { data, error };
 }
 
-export async function verifyOtp({ type, token_hash, req, res }: VerifyOtpParams) {
+export async function verifyOtp({
+  type,
+  token_hash,
+  req,
+  res,
+}: VerifyOtpParams) {
   const serverClient = newServerClient({ req, res });
   const { error } = await serverClient.auth.verifyOtp({
     type,
