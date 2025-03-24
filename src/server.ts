@@ -12,6 +12,7 @@ import { complaintRoutes } from "./routes/complaints";
 import parkingRoutes from "./routes/parking";
 import accessCodesRoutes from "./routes/accessCodes";
 import smartPackageRoutes from "./routes/smartPackage";
+import demoRoutes from "./routes/demo";
 
 
 // Configuration
@@ -47,6 +48,7 @@ app.use("/parking", requiresAuthentication, parkingRoutes);
 app.use("/complaints", complaintRoutes);
 app.use("/accessCodes", accessCodesRoutes);
 app.use('/smartpackage', requiresAuthentication, smartPackageRoutes);
+app.use("/demo", demoRoutes);
 
 // Listener
 app.listen(PORT, HOST, () => {

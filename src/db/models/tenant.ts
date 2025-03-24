@@ -60,6 +60,7 @@ export const getTenantByEmail = async (tenantEmail: string) => {
 
         return result[0];
     } catch (error) {
+        console.error(error);
         throw new Error('Failed to fetch tenant by email');
     };
 };
