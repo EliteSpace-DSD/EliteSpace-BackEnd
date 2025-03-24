@@ -236,10 +236,8 @@ export type ParkingPermitInsertType = typeof parkingPermits.$inferInsert;
 export type ParkingSpaceSelectType = typeof parkingSpaces.$inferSelect;
 export type ParkingSpaceInsertType = typeof parkingSpaces.$inferInsert;
 
-export type MaintenanceRequestSelectType =
-  typeof maintenanceRequests.$inferSelect;
-export type MaintenanceRequestInsertType =
-  typeof maintenanceRequests.$inferInsert;
+export type MaintenanceRequestSelectType = typeof maintenanceRequests.$inferSelect;
+export type MaintenanceRequestInsertType = typeof maintenanceRequests.$inferInsert;
 
 export type ComplaintSelectType = typeof complaints.$inferSelect;
 export type ComplaintInsertType = typeof complaints.$inferInsert;
@@ -296,30 +294,24 @@ export const leasesRelations = relations(leases, ({ one }) => ({
   }),
 }));
 
-export const maintenanceRequestsRelations = relations(
-  maintenanceRequests,
-  ({ one }) => ({
-    unit: one(units, {
-      fields: [maintenanceRequests.unitId],
-      references: [units.id],
-    }),
-    tenant: one(tenants, {
-      fields: [maintenanceRequests.tenantId],
-      references: [tenants.id],
-    }),
-  })
-);
+export const maintenanceRequestsRelations = relations(maintenanceRequests, ({ one }) => ({
+  unit: one(units, {
+    fields: [maintenanceRequests.unitId],
+    references: [units.id],
+  }),
+  tenant: one(tenants, {
+    fields: [maintenanceRequests.tenantId],
+    references: [tenants.id],
+  }),
+}));
 
-export const smartLockersRelations = relations(
-  smartLockers,
-  ({ one, many }) => ({
-    building: one(buildings, {
-      fields: [smartLockers.buildingId],
-      references: [buildings.id],
-    }),
-    packages: many(packages),
-  })
-);
+export const smartLockersRelations = relations(smartLockers, ({ one, many }) => ({
+  building: one(buildings, {
+    fields: [smartLockers.buildingId],
+    references: [buildings.id],
+  }),
+  packages: many(packages),
+}));
 
 export const packagesRelations = relations(packages, ({ one }) => ({
   tenant: one(tenants, {
