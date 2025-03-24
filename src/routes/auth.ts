@@ -100,6 +100,11 @@ router.post("/signin", async (req: Request, res: Response) => {
     const { data, error } = await signInWithEmail(email, password);
 
     if (error) {
+      if (error.code === "email_not_confirmed") {
+        res.status(400).json({ message: "Check email and verify account to log in." });
+        return;
+      }
+
       res.status(401).json({ message: "Invalid email or password. Please try again." });
       return;
     }
