@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
-import { getTenantByEmail } from "../db/models/tenant";
+import { getTenantByEmail, getTenantInfoByUserId } from "../db/models/tenant";
 import { initiatePasswordReset, linkUserToTenant, signInWithEmail, signUpNewUser, updatePassword, verifyOtp, signout } from "../authClient/authFunctions";
+import { authClient } from "../authClient";
 
 const router = express.Router();
 
@@ -130,6 +131,42 @@ router.post("/signin", async (req: Request, res: Response) => {
     res.status(500).json({ message: "Server error" });
     return;
   }
+});
+
+router.get("/verify-user", async (req: Request, res: Response) => {
+      try {
+          const token = req.cookies['sb-access-token'];
+          if (!token) {
+              res.status(401).json({message: "Unauthorized. No session found."});
+              return;
+          }
+  
+          const {data, error} = await authClient.auth.getUser(token);
+  
+          if (error || !data.user) {
+              res.status(401).json({message: "Invalid or expired session."});
+              return;
+          }
+  
+          //  Adding user property (object) to request object
+          req.user = {
+              userId: data.user.id, 
+              email: data.user.email
+          };
+  
+          const tenantInfo = await getTenantInfoByUserId(data.user.id);
+          if (!tenantInfo) {
+              res.status(401).json({message: "unable to find tenant in query"});
+              return;          
+          }
+  
+          res.status(200).json(tenantInfo);
+          return;
+      } catch (err) {
+          console.error('Auth middleware error:', err)        
+          res.status(500).json({ message: 'Server error' });
+          return;
+      }
 });
 
 router.post("");
