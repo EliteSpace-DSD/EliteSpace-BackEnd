@@ -12,9 +12,16 @@ import {
   pgEnum,
 } from "drizzle-orm/pg-core";
 
+// Enums
 export type IssueType = "hvac" | "plumbing" | "other";
 export type MaintenanceStatus = "open" | "closed";
-export type ComplaintType = "noise" | "other";
+export type ComplaintCategoryType =
+  | "noise"
+  | "maintenance"
+  | "building_issues"
+  | "neighbor_disputes"
+  | "package_issues"
+  | "other";
 export type PackageStatus = "delivered" | "retrieved";
 export type AccessCodeType = "resident" | "guest";
 
@@ -27,7 +34,14 @@ export const maintenanceStatusEnum = pgEnum("maintenance_status", [
   "open",
   "closed",
 ]);
-export const complaintTypeEnum = pgEnum("complaint_type", ["noise", "other"]);
+export const complaintCategoryEnum = pgEnum("complaint_category", [
+  "noise",
+  "maintenance",
+  "building_issues",
+  "neighbor_disputes",
+  "package_issues",
+  "other",
+]);
 export const packageStatusEnum = pgEnum("package_status", [
   "delivered",
   "retrieved",
@@ -124,6 +138,17 @@ export const parkingPermits = pgTable("parking_permits", {
   ...timestamps,
 });
 
+export const parkingSpaces = pgTable("parking_spaces", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  parkingSpace: integer("parking_space").notNull(),
+  status: text("status").notNull(),
+  tenantId: uuid("tenant_id").references(() => tenants.id, {
+    onDelete: "cascade",
+  }),
+  expiresAt: timestamp("expires_at", { withTimezone: true, mode: "date" }),
+  ...timestamps,
+});
+
 export const maintenanceRequests = pgTable("maintenance_requests", {
   id: uuid("id").primaryKey().defaultRandom(),
   tenantId: uuid("tenant_id").references(() => tenants.id, {
@@ -143,7 +168,8 @@ export const complaints = pgTable("complaints", {
   tenantId: uuid("tenant_id").references(() => tenants.id, {
     onDelete: "cascade",
   }),
-  issueType: complaintTypeEnum("issue_type").notNull(),
+  issueType: complaintCategoryEnum("complaint_category").notNull(),
+  complaintTitle: text("complaint_title").notNull(),
   description: text("description").notNull(),
   priority: text("priority").notNull(),
   resolvedAt: timestamp("resolved_at", { withTimezone: true, mode: "date" }),
@@ -198,15 +224,9 @@ export const locks = pgTable("locks", {
     withTimezone: true,
     mode: "date",
   }).defaultNow(),
-  createdAt: timestamp("created_at", {
-    withTimezone: true,
-    mode: "date",
-  }).defaultNow(),
-  updatedAt: timestamp("updated_at", {
-    withTimezone: true,
-    mode: "date",
-  }).defaultNow(),
+  ...timestamps,
 });
+
 // Inferred types for retrieval and insertion operations
 export type BuildingSelectType = typeof buildings.$inferSelect;
 export type BuildingInsertType = typeof buildings.$inferInsert;
@@ -225,6 +245,9 @@ export type LeaseInsertType = typeof leases.$inferInsert;
 
 export type ParkingPermitSelectType = typeof parkingPermits.$inferSelect;
 export type ParkingPermitInsertType = typeof parkingPermits.$inferInsert;
+
+export type ParkingSpaceSelectType = typeof parkingSpaces.$inferSelect;
+export type ParkingSpaceInsertType = typeof parkingSpaces.$inferInsert;
 
 export type MaintenanceRequestSelectType =
   typeof maintenanceRequests.$inferSelect;
@@ -331,4 +354,3 @@ export const locksRelations = relations(locks, ({ one }) => ({
     references: [tenants.id],
   }),
 }));
-

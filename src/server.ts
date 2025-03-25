@@ -9,8 +9,10 @@ import { requiresAuthentication } from "./middleware/authMiddleware";
 import authRoutes from "./routes/auth";
 import leaseRoutes from "./routes/leases";
 import { complaintRoutes } from "./routes/complaints";
+import parkingRoutes from "./routes/parking";
 import accessCodesRoutes from "./routes/accessCodes";
-import smartPackgeRoutes from "./routes/smartPackage";
+import smartPackageRoutes from "./routes/smartPackage";
+import demoRoutes from "./routes/demo";
 import lockRoutes from "./routes/locks";
 
 // Configuration
@@ -40,14 +42,13 @@ app.use("/auth", authRoutes);
 app.use("/leases", requiresAuthentication, leaseRoutes);
 app.use("/complaints", complaintRoutes);
 app.use("/accessCodes", accessCodesRoutes);
-app.use("/smartpackage", requiresAuthentication, smartPackgeRoutes);
+app.use("/smartpackage", requiresAuthentication, smartPackageRoutes);
 app.use("/locks", lockRoutes);
 app.use("/parking", requiresAuthentication, parkingRoutes);
 app.use("/complaints", requiresAuthentication, complaintRoutes);
 app.use("/accessCodes", requiresAuthentication, accessCodesRoutes);
-app.use('/smartpackage', requiresAuthentication, smartPackageRoutes);
+app.use("/smartpackage", requiresAuthentication, smartPackageRoutes);
 app.use("/demo", demoRoutes);
-
 
 // Listener
 app.listen(PORT, HOST, () => {
