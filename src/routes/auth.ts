@@ -127,7 +127,7 @@ router.post("/signin", async (req: Request, res: Response) => {
     res.cookie("sb-access-token", session.access_token, {
       httpOnly: true, //Prevents JS access
       // secure: true, // only sent over HTTPS, set as true only in production
-      sameSite: "strict",
+      sameSite: "none",
       maxAge: session.expires_in * 1000,
     });
 
