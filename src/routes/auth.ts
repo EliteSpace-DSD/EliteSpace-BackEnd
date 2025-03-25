@@ -2,6 +2,8 @@ import express, { Request, Response } from "express";
 import { getTenantByEmail, getTenantInfoByUserId } from "../db/models/tenant";
 import { initiatePasswordReset, linkUserToTenant, signInWithEmail, signUpNewUser, updatePassword, verifyOtp, signout } from "../authClient/authFunctions";
 import { authClient } from "../authClient";
+import 'dotenv/config'
+
 
 const router = express.Router();
 
@@ -103,6 +105,7 @@ router.get("/confirm", async function (req: Request, res: Response) {
 // Note: users needs to click confirm on their confirmation email before being able to sign in
 router.post("/signin", async (req: Request, res: Response) => {
   try {
+    const secureFlag = Boolean(process.env.SECURE_FLAG);
     const { email, password } = req.body;
     const { data, error } = await signInWithEmail(email, password);
 
@@ -126,7 +129,7 @@ router.post("/signin", async (req: Request, res: Response) => {
     // access token expires_in by default is 3600 seconds, * 1000 = 3600000 milliseconds = 1 hour
     res.cookie("sb-access-token", session.access_token, {
       httpOnly: true, //Prevents JS access
-      // secure: true, // only sent over HTTPS, set as true only in production
+      secure: secureFlag, // only sent over HTTPS, set as true only in production
       sameSite: "none",
       maxAge: session.expires_in * 1000,
     });
