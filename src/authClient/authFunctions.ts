@@ -18,7 +18,9 @@ export async function signUpNewUser(email: string, password: string, first_name:
     options: {
       emailRedirectTo: `${redirectURL}?next=https://elitespace.netlify.app/login`,
       data: {
-        first_name
+        user_metadata: {
+          first_name
+        }
       }, // passes first_name into Supabase .Data to be used in email configuration
     },
   });
