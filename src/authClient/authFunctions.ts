@@ -12,7 +12,9 @@ interface VerifyOtpParams {
 }
 
 export async function signUpNewUser(email: string, password: string, first_name: string) {
-
+  console.log("CHECK POINT 1");
+  console.log(redirectURL);
+  console.log(first_name);
   const { data, error } = await authClient.auth.signUp({
     email: email,
     password: password,
