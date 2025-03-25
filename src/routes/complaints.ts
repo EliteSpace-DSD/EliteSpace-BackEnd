@@ -4,9 +4,13 @@ const router = express.Router();
 
 router.post("/submit-complaint", async (req: Request, res: Response) => {
   try {
+    console.log("CHECKPOINT 3");
     const { selectedIssue, extraDetails } = req.body;
+    console.log(selectedIssue);
+    console.log(extraDetails);
     //Pass full object to AI
     const priority = await runGemini(extraDetails);
+    console.log("CHECKPOINT 4");
     const fullComplaint = {
       selectedIssue,
       extraDetails,
