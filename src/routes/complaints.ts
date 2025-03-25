@@ -14,10 +14,12 @@ router.post("/submit-complaint", async (req: Request, res: Response) => {
     };
     console.log("Complaint Processed:", fullComplaint);
     //Call AI here
-    res.status(200).json({
+    const check = res.status(200).json({
       message: "Complaint submitted in successfully",
       complaint: fullComplaint,
     });
+
+    console.log(check);
   } catch (error) {
     console.error("Error processing complaint:", error);
     res.status(500).json({ message: "Server error" });
