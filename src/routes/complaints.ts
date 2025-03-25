@@ -17,7 +17,9 @@ router.post("/submit-complaint", async (req: Request, res: Response) => {
     res.status(200).json({
       message: "Complaint submitted in successfully",
       complaint: fullComplaint,
+      statusCode: 200
     });
+
   } catch (error) {
     console.error("Error processing complaint:", error);
     res.status(500).json({ message: "Server error" });

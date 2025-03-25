@@ -42,6 +42,12 @@ app.use("/complaints", complaintRoutes);
 app.use("/accessCodes", accessCodesRoutes);
 app.use("/smartpackage", requiresAuthentication, smartPackgeRoutes);
 app.use("/locks", lockRoutes);
+app.use("/parking", requiresAuthentication, parkingRoutes);
+app.use("/complaints", requiresAuthentication, complaintRoutes);
+app.use("/accessCodes", requiresAuthentication, accessCodesRoutes);
+app.use('/smartpackage', requiresAuthentication, smartPackageRoutes);
+app.use("/demo", demoRoutes);
+
 
 // Listener
 app.listen(PORT, HOST, () => {

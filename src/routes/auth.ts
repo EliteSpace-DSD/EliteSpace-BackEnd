@@ -12,6 +12,10 @@ import {
 import { tenants } from "../db/schema";
 import { eq } from "drizzle-orm";
 import { db } from "../db/index";
+import { getTenantByEmail, getTenantInfoByUserId } from "../db/models/tenant";
+import { initiatePasswordReset, linkUserToTenant, signInWithEmail, signUpNewUser, updatePassword, verifyOtp, signout } from "../authClient/authFunctions";
+import { authClient } from "../authClient";
+
 const router = express.Router();
 
 router.post("/register", async (req: Request, res: Response) => {
@@ -45,8 +49,16 @@ router.post("/register", async (req: Request, res: Response) => {
         "2000-01-01"
       );
 
+      if (!email || !data.user.id || !phone || !dob) {
+        console.error("Missing certain mandatory info");
+        res.status(500).json({message: "Empty mandatory fields"});
+        return;
+      }
+  
+      const { error: dbError } = await linkUserToTenant(email, data.user.id, phone, dob);
       if (dbError) {
         res.status(500).json({ message: "Server error" });
+        return;
       }
 
       res.status(200).json({ message: "Account registered." });
@@ -183,6 +195,42 @@ router.post("/signin", async (req: Request, res: Response) => {
     res.status(500).json({ message: "Server error" });
     return;
   }
+});
+
+router.get("/verify-user", async (req: Request, res: Response) => {
+      try {
+          const token = req.cookies['sb-access-token'];
+          if (!token) {
+              res.status(401).json({message: "Unauthorized. No session found."});
+              return;
+          }
+  
+          const {data, error} = await authClient.auth.getUser(token);
+  
+          if (error || !data.user) {
+              res.status(401).json({message: "Invalid or expired session."});
+              return;
+          }
+  
+          //  Adding user property (object) to request object
+          req.user = {
+              userId: data.user.id, 
+              email: data.user.email
+          };
+  
+          const tenantInfo = await getTenantInfoByUserId(data.user.id);
+          if (!tenantInfo) {
+              res.status(401).json({message: "unable to find tenant in query"});
+              return;          
+          }
+  
+          res.status(200).json(tenantInfo);
+          return;
+      } catch (err) {
+          console.error('Auth middleware error:', err)        
+          res.status(500).json({ message: 'Server error' });
+          return;
+      }
 });
 
 router.post("");

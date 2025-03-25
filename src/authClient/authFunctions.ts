@@ -12,19 +12,21 @@ interface VerifyOtpParams {
 }
 
 export async function signUpNewUser(email: string, password: string, first_name: string) {
-
   const { data, error } = await authClient.auth.signUp({
     email: email,
     password: password,
     options: {
       emailRedirectTo: `${redirectURL}?next=https://elitespace.netlify.app/login`,
       data: {
-        user_metadata: {
-          first_name
-        }
+        first_name
       }, // passes first_name into Supabase .Data to be used in email configuration
     },
   });
+
+  console.log("CHECK POINT 1");
+  console.log(data);
+  console.log("CHECK POINT 2");
+  console.log(error);
 
   return { data, error };
 }
