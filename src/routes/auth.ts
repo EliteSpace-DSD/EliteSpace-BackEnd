@@ -26,9 +26,7 @@ router.post("/register", async (req: Request, res: Response) => {
       return;
     }
 
-    const { data, error } = await signUpNewUser(email, password, {
-      first_name: "DefaultName",
-    });
+    const { data, error } = await signUpNewUser(email, password, "DefaultName");
 
     if (error) {
       const errorMsg =
@@ -126,17 +124,20 @@ router.post("/signin", async (req: Request, res: Response) => {
     const { data, error } = await signInWithEmail(email, password);
 
     if (error) {
-
       res
         .status(401)
         .json({ message: "Invalid email or password. Please try again." });
 
       if (error.code === "email_not_confirmed") {
-        res.status(400).json({ message: "Check email and verify account to log in." });
+        res
+          .status(400)
+          .json({ message: "Check email and verify account to log in." });
         return;
       }
 
-      res.status(401).json({ message: "Invalid email or password. Please try again." });
+      res
+        .status(401)
+        .json({ message: "Invalid email or password. Please try again." });
 
       return;
     }
