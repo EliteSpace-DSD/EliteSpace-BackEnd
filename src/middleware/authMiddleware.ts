@@ -7,6 +7,7 @@ export const requiresAuthentication =  async (req: Request, res: Response, next:
         const token = req.cookies['sb-access-token'];
         if (!token) {
             res.status(401).json({message: "Unauthorized. No session found."});
+            console.error("Unauthorized. No session found.");
             return;
         }
 
@@ -14,6 +15,7 @@ export const requiresAuthentication =  async (req: Request, res: Response, next:
 
         if (error || !data.user) {
             res.status(401).json({message: "Invalid or expired session."});
+            console.error("Invalid or expired session.");
             return;
         }
 
@@ -26,6 +28,7 @@ export const requiresAuthentication =  async (req: Request, res: Response, next:
         const tenantInfo = await getTenantInfoByUserId(data.user.id);
         if (!tenantInfo) {
             res.status(401).json({message: "unable to find tenant in query"});
+            console.error("unable to find tenant in query");
             return;          
         }
 
