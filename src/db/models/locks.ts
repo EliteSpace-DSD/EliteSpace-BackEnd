@@ -3,87 +3,46 @@ import { eq } from "drizzle-orm";
 import { locks, tenants } from "../schema";
 
 // Fetch lock state by tenant ID
-export const getLockStateByTenantId = async (tenantId: string | null) => {
+export const getLockStateByTenantId = async (tenantId: string) => {
   try {
-    let result;
+    // Fetch lock state for the tenant
+    let result = await db.query.locks.findFirst({
+      where: eq(locks.tenantId, tenantId),
+      columns: {
+        tenantName: true,
+        isLocked: true,
+        lockTime: true,
+      },
+    });
 
-    // Handle the "just a user" case separately
-    if (tenantId === "guest") {
-      result = await db.query.locks.findFirst({
-        where: eq(locks.tenantName, "Not a tenant"), // Query by tenantName for "Not a tenant"
+    // If no record is found for the tenant, fetch the tenant's firstName and lastName
+    if (!result) {
+      const tenantRecord = await db.query.tenants.findFirst({
+        where: eq(tenants.id, tenantId),
         columns: {
-          tenantName: true,
-          isLocked: true,
-          lockTime: true,
+          firstName: true,
+          lastName: true,
         },
       });
 
-      // If no record is found for "Not a tenant", create a default one
-      if (!result) {
-        result = await db
-          .insert(locks)
-          .values({
-            tenantId: null, // No tenantId
-            tenantName: "Not a tenant", // Set tenantName to "Not a tenant"
-            isLocked: true, // Default state is Locked
-            lockTime: new Date(),
-          })
-          .onConflictDoNothing() // Prevent duplicate records
-          .returning()
-          .then((rows) => rows[0]);
-
-        // Fetch the record again if it was inserted
-        if (!result) {
-          result = await db.query.locks.findFirst({
-            where: eq(locks.tenantName, "Not a tenant"),
-            columns: {
-              tenantName: true,
-              isLocked: true,
-              lockTime: true,
-            },
-          });
-        }
+      if (!tenantRecord) {
+        console.error(`No tenant found for tenantId: ${tenantId}`);
+        return null;
       }
-    } else if (tenantId) {
-      // Handle regular tenantId case
-      result = await db.query.locks.findFirst({
-        where: eq(locks.tenantId, tenantId),
-        columns: {
-          tenantName: true,
+
+      // Combine firstName and lastName to form tenantName
+      const tenantName = `${tenantRecord.firstName} ${tenantRecord.lastName}`;
+
+      result = await db
+        .insert(locks)
+        .values({
+          tenantId,
+          tenantName,
           isLocked: true,
-          lockTime: true,
-        },
-      });
-
-      // If no record is found for the tenant, fetch the tenant's firstName and lastName
-      if (!result) {
-        const tenantRecord = await db.query.tenants.findFirst({
-          where: eq(tenants.id, tenantId),
-          columns: {
-            firstName: true,
-            lastName: true,
-          },
-        });
-
-        if (!tenantRecord) {
-          console.error(`No tenant found for tenantId: ${tenantId}`);
-          return null;
-        }
-
-        // Combine firstName and lastName to form tenantName
-        const tenantName = `${tenantRecord.firstName} ${tenantRecord.lastName}`;
-
-        result = await db
-          .insert(locks)
-          .values({
-            tenantId,
-            tenantName,
-            isLocked: true,
-            lockTime: new Date(),
-          })
-          .returning()
-          .then((rows) => rows[0]);
-      }
+          lockTime: new Date(),
+        })
+        .returning()
+        .then((rows) => rows[0]);
     }
 
     return result || null;
@@ -95,19 +54,14 @@ export const getLockStateByTenantId = async (tenantId: string | null) => {
 
 // Update or insert lock state for a tenant
 export const upsertLockState = async (
-  tenantId: string | null,
+  tenantId: string,
   tenantName: string,
   isLocked: boolean
 ) => {
   try {
-    // Set tenantId to null if it's "guest/not logged in"
-    const normalizedTenantId = tenantId === "guest" ? null : tenantId;
-
     // Check for an existing record
     const existingRecord = await db.query.locks.findFirst({
-      where: normalizedTenantId
-        ? eq(locks.tenantId, normalizedTenantId)
-        : eq(locks.tenantName, "Not a tenant"), // Handle null or "guest" tenantId
+      where: eq(locks.tenantId, tenantId),
     });
 
     if (existingRecord) {
@@ -118,11 +72,7 @@ export const upsertLockState = async (
           isLocked,
           lockTime: new Date(),
         })
-        .where(
-          normalizedTenantId
-            ? eq(locks.tenantId, normalizedTenantId)
-            : eq(locks.tenantName, "Not a tenant")
-        ) // Handle null or "guest" tenantId
+        .where(eq(locks.tenantId, tenantId))
         .returning();
 
       return result[0];
@@ -131,8 +81,8 @@ export const upsertLockState = async (
       const result = await db
         .insert(locks)
         .values({
-          tenantId: normalizedTenantId,
-          tenantName: normalizedTenantId ? tenantName : "Not a tenant", // Set tenantName to "Not a tenant" for when no tenantId(not logged in)
+          tenantId,
+          tenantName,
           isLocked,
           lockTime: new Date(),
         })
@@ -147,14 +97,12 @@ export const upsertLockState = async (
   }
 };
 
-// Fetch lock details and log tenant information
-export const getTenantLockDetails = async (tenantId: string | null) => {
+// Fetch lock details
+export const getTenantLockDetails = async (tenantId: string) => {
   try {
     // Query the locks table for the tenant's lock details
     const result = await db.query.locks.findFirst({
-      where: tenantId
-        ? eq(locks.tenantId, tenantId)
-        : eq(locks.tenantName, "Not a tenant"), //  null tenantId
+      where: eq(locks.tenantId, tenantId),
       columns: {
         tenantName: true,
         isLocked: true,
@@ -163,19 +111,9 @@ export const getTenantLockDetails = async (tenantId: string | null) => {
     });
 
     if (!result) {
-      console.log(
-        `No lock details found for tenantId: ${tenantId || "Not a tenant"}`
-      );
+      console.log(`No lock details found for tenantId: ${tenantId}`);
       return null;
     }
-
-    // Log tenant details
-    console.log(`Tenant Lock Details:`, {
-      tenantName: result.tenantName,
-      isLocked: result.isLocked,
-      lockStatus: result.isLocked ? "Locked" : "Unlocked",
-      lockTime: result.lockTime,
-    });
 
     return {
       tenantName: result.tenantName,
