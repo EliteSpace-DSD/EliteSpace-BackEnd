@@ -26,11 +26,14 @@ router.post("/register", async (req: Request, res: Response) => {
     }
 
     if (data.user) {
+      if (!email || !data.user.id || !phone || !dob) {
+        console.error("Missing certain mandatory info");
+        res.status(500).json({message: "Empty mandatory fields"});
+        return;
+      }
+  
       const { error: dbError } = await linkUserToTenant(email, data.user.id, phone, dob);
-      console.log("CHECK POINT 1");
-      console.log(data.user);
-      console.log("CHECK POINT 2");
-      console.log(dbError);
+
       if (dbError) {
         res.status(500).json({ message: "Server error" });
         return;
