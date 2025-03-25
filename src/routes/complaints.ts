@@ -17,6 +17,7 @@ router.post("/submit-complaint", async (req: Request, res: Response) => {
     const check = res.status(200).json({
       message: "Complaint submitted in successfully",
       complaint: fullComplaint,
+      statusCode: 200
     });
 
     console.log(check);
