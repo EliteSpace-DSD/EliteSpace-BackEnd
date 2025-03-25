@@ -331,3 +331,4 @@ export const locksRelations = relations(locks, ({ one }) => ({
     references: [tenants.id],
   }),
 }));
+
