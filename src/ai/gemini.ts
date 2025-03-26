@@ -18,10 +18,10 @@ export const runGemini = async (extraDetails: string) => {
     const result = await model.generateContent(prompt);
     const aiResponse = result.response.text().trim();
 
-    console.log(aiResponse);
     const validPriorities = ["Low", "Medium", "High"];
     return validPriorities.includes(aiResponse) ? aiResponse : "Medium";
   } catch (error) {
     console.error(error);
+    return "High";
   }
 };
