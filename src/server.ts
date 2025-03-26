@@ -13,6 +13,8 @@ import parkingRoutes from "./routes/parking";
 import accessCodesRoutes from "./routes/accessCodes";
 import smartPackageRoutes from "./routes/smartPackage";
 import demoRoutes from "./routes/demo";
+import lockRoutes from "./routes/locks";
+
 
 // Configuration
 const app = express();
@@ -48,6 +50,7 @@ app.use(
 // Use routes
 app.use("/auth", authRoutes);
 app.use("/leases", requiresAuthentication, leaseRoutes);
+app.use("/locks", requiresAuthentication, lockRoutes);
 app.use("/parking", requiresAuthentication, parkingRoutes);
 app.use("/complaints", requiresAuthentication, complaintRoutes);
 app.use("/accessCodes", requiresAuthentication, accessCodesRoutes);

@@ -12,6 +12,7 @@ import {
   pgEnum,
 } from "drizzle-orm/pg-core";
 
+// Enums
 export type IssueType = "hvac" | "plumbing" | "other";
 export type MaintenanceStatus = "open" | "closed";
 export type ComplaintCategoryType =
@@ -29,6 +30,10 @@ export const issueTypeEnum = pgEnum("issue_type", [
   "plumbing",
   "other",
 ]);
+export const maintenanceStatusEnum = pgEnum("maintenance_status", [
+  "open",
+  "closed",
+]);
 export const complaintCategoryEnum = pgEnum("complaint_category", [
   "noise",
   "maintenance",
@@ -37,12 +42,6 @@ export const complaintCategoryEnum = pgEnum("complaint_category", [
   "package_issues",
   "other",
 ]);
-export const maintenanceStatusEnum = pgEnum("maintenance_status", [
-  "open",
-  "closed",
-]);
-//Replaced by complaintCategoryEnum
-export const complaintTypeEnum = pgEnum("complaint_type", ["noise", "other"]);
 export const packageStatusEnum = pgEnum("package_status", [
   "delivered",
   "retrieved",
@@ -126,7 +125,7 @@ export const leases = pgTable("leases", {
 
 export const parkingPermits = pgTable("parking_permits", {
   id: uuid("id").primaryKey().defaultRandom(),
-  tenantId: uuid("tenant_id").references(() => tenants.userId, {
+  tenantId: uuid("tenant_id").references(() => tenants.id, {
     onDelete: "cascade",
   }),
   guestName: text("guest_name"),
@@ -169,8 +168,7 @@ export const complaints = pgTable("complaints", {
   tenantId: uuid("tenant_id").references(() => tenants.id, {
     onDelete: "cascade",
   }),
-  issueType: complaintTypeEnum("issue_type").notNull(),
-  complaintCategory: complaintCategoryEnum("complaint_category").notNull(),
+  issueType: complaintCategoryEnum("complaint_category").notNull(),
   complaintTitle: text("complaint_title").notNull(),
   description: text("description").notNull(),
   priority: text("priority").notNull(),
@@ -215,6 +213,20 @@ export const packages = pgTable("packages", {
   ...timestamps,
 });
 
+export const locks = pgTable("locks", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id").references(() => tenants.id, {
+    onDelete: "cascade",
+  }),
+  tenantName: text("tenant_name").notNull(),
+  isLocked: boolean("is_locked").notNull().default(true),
+  lockTime: timestamp("lock_time", {
+    withTimezone: true,
+    mode: "date",
+  }).defaultNow(),
+  ...timestamps,
+});
+
 // Inferred types for retrieval and insertion operations
 export type BuildingSelectType = typeof buildings.$inferSelect;
 export type BuildingInsertType = typeof buildings.$inferInsert;
@@ -253,6 +265,9 @@ export type SmartLockerInsertType = typeof smartLockers.$inferInsert;
 
 export type PackageSelectType = typeof packages.$inferSelect;
 export type PackageInsertType = typeof packages.$inferInsert;
+
+export type LockSelectType = typeof locks.$inferSelect;
+export type LockInsertType = typeof locks.$inferInsert;
 
 // Table Relations
 export const buildingsRelations = relations(buildings, ({ many }) => ({
@@ -330,5 +345,12 @@ export const packagesRelations = relations(packages, ({ one }) => ({
   smartLocker: one(smartLockers, {
     fields: [packages.lockerId],
     references: [smartLockers.id],
+  }),
+}));
+
+export const locksRelations = relations(locks, ({ one }) => ({
+  tenant: one(tenants, {
+    fields: [locks.tenantId],
+    references: [tenants.id],
   }),
 }));
