@@ -19,7 +19,7 @@ const router = express.Router();
 
 router.post("/register", async (req: Request, res: Response) => {
   try {
-    const { email, password, phone, dob } = req.body;
+    const {first_name, email, password, phone, dob } = req.body;
 
     if (!email || !password || !phone || !dob) {
       res.status(400).json({ message: "Missing mandatory fields." });
@@ -34,7 +34,7 @@ router.post("/register", async (req: Request, res: Response) => {
       return;
     }
 
-    const { data, error } = await signUpNewUser(email, password, "DefaultName");
+    const { data, error } = await signUpNewUser(email, password, first_name);
     if (error) {
       const errorMsg =
         error.code === "weak_password"
