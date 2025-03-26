@@ -8,8 +8,6 @@ if (!process.env.GEMINI_API_KEY) {
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-// const prompt: string = "create a short poem";
-
 export const runGemini = async (extraDetails: string) => {
   try {
     //Take in the complaint, image, and extra details
@@ -18,10 +16,10 @@ export const runGemini = async (extraDetails: string) => {
     const result = await model.generateContent(prompt);
     const aiResponse = result.response.text().trim();
 
-    console.log(aiResponse);
     const validPriorities = ["Low", "Medium", "High"];
     return validPriorities.includes(aiResponse) ? aiResponse : "Medium";
   } catch (error) {
     console.error(error);
+    return "High";
   }
 };

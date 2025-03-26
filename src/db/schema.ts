@@ -168,7 +168,8 @@ export const complaints = pgTable("complaints", {
   tenantId: uuid("tenant_id").references(() => tenants.id, {
     onDelete: "cascade",
   }),
-  issueType: complaintCategoryEnum("complaint_category").notNull(),
+  issueType: complaintCategoryEnum("issue_type").notNull(),
+  complaintCategory: complaintCategoryEnum("complaint_category").notNull(),
   complaintTitle: text("complaint_title").notNull(),
   description: text("description").notNull(),
   priority: text("priority").notNull(),

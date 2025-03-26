@@ -1,33 +1,56 @@
+/**
+ * Issuetype is deprecaited, remains due to DB needing specific column
+ */
+
 import express, { Request, Response } from "express";
 import { runGemini } from "../ai/gemini";
+import { createComplaint, getAllComplaints } from "../db/models/complaint";
 const router = express.Router();
 
+type ComplaintCategory =
+  | "noise"
+  | "maintenance"
+  | "building_issues"
+  | "neighbor_disputes"
+  | "package_issues"
+  | "other";
+interface Complaint {
+  complaintCategory: ComplaintCategory;
+  complaintTitle: string;
+  issueType: "other";
+  description: string;
+  priority: string;
+  img?: string;
+}
 router.post("/submit-complaint", async (req: Request, res: Response) => {
   try {
-    console.log("CHECKPOINT 3");
     const { selectedIssue, extraDetails } = req.body;
-    console.log(selectedIssue);
-    console.log(extraDetails);
+
     //Pass full object to AI
     const priority = await runGemini(extraDetails);
-    console.log("CHECKPOINT 4");
-    const fullComplaint = {
-      selectedIssue,
-      extraDetails,
+
+    const fullComplaint: Complaint = {
+      complaintCategory: selectedIssue.category,
+      complaintTitle: selectedIssue.subCategory,
+      issueType: "other",
+      description: extraDetails,
       priority,
     };
-    console.log("Complaint Processed:", fullComplaint);
-    //Call AI here
+    const complaint = await createComplaint(fullComplaint);
     res.status(200).json({
       message: "Complaint submitted in successfully",
       complaint: fullComplaint,
-      statusCode: 200
+      statusCode: 200,
     });
-
   } catch (error) {
     console.error("Error processing complaint:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
-
+router.get("/get-complaints", async (req: Request, res: Response) => {
+  try {
+    const complaints = await getAllComplaints();
+    res.status(200).json({ complaints });
+  } catch (error) {}
+});
 export const complaintRoutes = router;

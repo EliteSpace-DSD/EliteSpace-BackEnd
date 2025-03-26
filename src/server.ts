@@ -15,6 +15,7 @@ import smartPackageRoutes from "./routes/smartPackage";
 import demoRoutes from "./routes/demo";
 import lockRoutes from "./routes/locks";
 
+
 // Configuration
 const app = express();
 const HOST: string = config.HOST;
@@ -35,10 +36,16 @@ app.use(morgan("common"));
 app.use(cookieParser()); // Enables reading cookies from req.cookies
 
 // Allows request from frontend AND local
-app.use(cors({
-  origin: ["http://localhost:5173", "https://elitespace.netlify.app", "https://elitespace-dev.netlify.app"],
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://elitespace.netlify.app",
+      "https://elitespace-dev.netlify.app",
+    ],
+    credentials: true,
+  })
+);
 
 // Use routes
 app.use("/auth", authRoutes);
