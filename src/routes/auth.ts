@@ -13,8 +13,7 @@ import { eq } from "drizzle-orm";
 import { db } from "../db/index";
 import { getTenantByEmail, getTenantInfoByUserId } from "../db/models/tenant";
 import { authClient } from "../authClient";
-import 'dotenv/config'
-
+import "dotenv/config";
 
 const router = express.Router();
 
@@ -159,8 +158,6 @@ router.post("/signin", async (req: Request, res: Response) => {
     }
 
     res.cookie("sb-access-token", session.access_token, {
-      httpOnly: true,
-      sameSite: "strict",
       httpOnly: true, //Prevents JS access
       secure: secureFlag, // only sent over HTTPS, set as true only in production
       sameSite: "none",
