@@ -13,7 +13,7 @@ import parkingRoutes from "./routes/parking";
 import accessCodesRoutes from "./routes/accessCodes";
 import smartPackageRoutes from "./routes/smartPackage";
 import demoRoutes from "./routes/demo";
-
+import lockRoutes from "./routes/locks";
 
 // Configuration
 const app = express();
@@ -34,20 +34,20 @@ app.use(express.json());
 app.use(morgan("common"));
 app.use(cookieParser()); // Enables reading cookies from req.cookies
 
-// Allows request from frontend AND local
-app.use(cors({
-  origin: ["http://localhost:5173", "https://elitespace.netlify.app", "https://elitespace-dev.netlify.app"],
-  credentials: true,
-}));
-
+// Allows request from frontend
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
 // Use routes
 app.use("/auth", authRoutes);
 app.use("/leases", requiresAuthentication, leaseRoutes);
+app.use("/complaints", complaintRoutes);
+app.use("/accessCodes", accessCodesRoutes);
+app.use("/smartpackage", requiresAuthentication, smartPackageRoutes);
+app.use("/locks", lockRoutes);
 app.use("/parking", requiresAuthentication, parkingRoutes);
 app.use("/complaints", requiresAuthentication, complaintRoutes);
 app.use("/accessCodes", requiresAuthentication, accessCodesRoutes);
-app.use('/smartpackage', requiresAuthentication, smartPackageRoutes);
+app.use("/smartpackage", requiresAuthentication, smartPackageRoutes);
 app.use("/demo", demoRoutes);
 
 // Listener
