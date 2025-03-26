@@ -50,7 +50,6 @@ router.post("/submit-complaint", async (req: Request, res: Response) => {
 router.get("/get-complaints", async (req: Request, res: Response) => {
   try {
     const complaints = await getAllComplaints();
-    console.log("Complaints:", complaints);
     res.status(200).json({ complaints });
   } catch (error) {}
 });
