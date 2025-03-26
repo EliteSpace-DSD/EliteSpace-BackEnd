@@ -34,8 +34,11 @@ app.use(express.json());
 app.use(morgan("common"));
 app.use(cookieParser()); // Enables reading cookies from req.cookies
 
-// Allows request from frontend
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+// Allows request from frontend AND local
+app.use(cors({
+  origin: ["http://localhost:5173", "https://elitespace.netlify.app", "https://elitespace-dev.netlify.app"],
+  credentials: true,
+}));
 
 // Use routes
 app.use("/auth", authRoutes);
