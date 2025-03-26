@@ -40,10 +40,7 @@ app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 // Use routes
 app.use("/auth", authRoutes);
 app.use("/leases", requiresAuthentication, leaseRoutes);
-app.use("/complaints", complaintRoutes);
-app.use("/accessCodes", accessCodesRoutes);
-app.use("/smartpackage", requiresAuthentication, smartPackageRoutes);
-app.use("/locks", lockRoutes);
+app.use("/locks", requiresAuthentication, lockRoutes);
 app.use("/parking", requiresAuthentication, parkingRoutes);
 app.use("/complaints", requiresAuthentication, complaintRoutes);
 app.use("/accessCodes", requiresAuthentication, accessCodesRoutes);
