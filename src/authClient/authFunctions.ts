@@ -24,11 +24,6 @@ export async function signUpNewUser(email: string, password: string, first_name:
     },
   });
 
-  console.log("CHECK POINT 1");
-  console.log(data);
-  console.log("CHECK POINT 2");
-  console.log(error);
-
   return { data, error };
 }
 
