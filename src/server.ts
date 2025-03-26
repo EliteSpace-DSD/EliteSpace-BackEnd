@@ -40,8 +40,12 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
+
       "https://elitespace.netlify.app",
+      "https://*.elitespace.netlify.app",
+
       "https://elitespace-dev.netlify.app",
+      "https://*.elitespace-dev.netlify.app"
     ],
     credentials: true,
   })
