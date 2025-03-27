@@ -35,6 +35,7 @@ export const runGemini = async (extraDetails: string) => {
     return "High";
   }
 };
+
 export const runEscalateComplaints = async (complaints: any): Promise<any> => {
   try {
     const prompt = `

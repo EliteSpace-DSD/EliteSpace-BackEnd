@@ -14,6 +14,7 @@ type ComplaintCategory =
   | "neighbor_disputes"
   | "package_issues"
   | "other";
+
 interface Complaint {
   complaintCategory: ComplaintCategory;
   complaintTitle: string;
@@ -22,6 +23,7 @@ interface Complaint {
   priority: string;
   img?: string;
 }
+
 type Complaints = {
   id: string;
   tenantId: string | null;
@@ -34,6 +36,7 @@ type Complaints = {
   updatedAt: string | Date;
   createdAt: string | Date;
 };
+
 router.post("/submit-complaint", async (req: Request, res: Response) => {
   try {
     const { selectedIssue, extraDetails } = req.body;
@@ -69,15 +72,14 @@ router.get("/get-complaints", async (req: Request, res: Response) => {
     //Returns all complaints from DB
     const complaints = await getAllComplaints();
     const stringifyComplaints = JSON.stringify(complaints);
+    
     //Send string to AI
-
     //AI will return a string of updated complaints
     //Turn string to JSON
 
     const escalatedComplaints = await runEscalateComplaints(
       stringifyComplaints
     );
-    console.log(escalatedComplaints);
     res.status(200).json({ escalatedComplaints });
   } catch (error) {
     console.error("Error getting complaints:", error);
