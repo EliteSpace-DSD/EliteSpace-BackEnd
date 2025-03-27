@@ -3,6 +3,7 @@ import { EmailOtpType } from "@supabase/supabase-js";
 import { authClient, newServerClient } from ".";
 
 const redirectURL = process.env.EMAIL_REDIRECT_URL;
+const confirmEmailRedirect = process.env.CONFIRM_EMAIL_REDIRECT;
 
 interface VerifyOtpParams {
   type: EmailOtpType;
@@ -11,14 +12,15 @@ interface VerifyOtpParams {
   res: Response;
 }
 
-export async function signUpNewUser(email: string, password: string, userData: {first_name: string}) {
-
+export async function signUpNewUser(email: string, password: string, first_name: string) {
   const { data, error } = await authClient.auth.signUp({
     email: email,
     password: password,
     options: {
-      emailRedirectTo: `${redirectURL}?next=https://elitespace.netlify.app/login`,
-      data: userData, // passes first_name into Supabase .Data to be used in email configuration
+      emailRedirectTo: confirmEmailRedirect,
+      data: {
+        first_name
+      }, // passes first_name into Supabase .Data to be used in email configuration
     },
   });
 
