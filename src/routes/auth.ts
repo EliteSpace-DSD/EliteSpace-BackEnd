@@ -197,6 +197,7 @@ router.get("/verify-user", async (req: Request, res: Response) => {
 
     const tenantInfo = await getTenantInfoByUserId(data.user.id);
     if (!tenantInfo) {
+      console.log("Debug log 4:(tenantInfo) ", tenantInfo);
       res.status(401).json({ message: "Unable to find tenant in query." });
       return;
     }
