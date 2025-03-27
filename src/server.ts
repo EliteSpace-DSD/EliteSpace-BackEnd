@@ -48,7 +48,7 @@ app.use(
       if (
         !origin || // allow non-browser tools like curl/Postman
         allowedOrigins.includes(origin) ||
-        /^https:\/\/.*\.elitespace(-dev)?\.netlify\.app$/.test(origin)
+        /^https:\/\/.*elitespace(-dev)?\.netlify\.app$/.test(origin)
       ) {
         callback(null, true);
       } else {
