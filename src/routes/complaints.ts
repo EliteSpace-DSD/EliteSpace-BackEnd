@@ -80,7 +80,7 @@ router.get("/get-complaints", async (req: Request, res: Response) => {
     const escalatedComplaints = await runEscalateComplaints(
       stringifyComplaints
     );
-    res.status(200).json({ escalatedComplaints });
+    res.status(200).json({ complaints: escalatedComplaints });
   } catch (error) {
     console.error("Error getting complaints:", error);
     res.status(500).json({ message: "Server error" });
