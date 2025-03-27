@@ -3,7 +3,7 @@
  */
 
 import express, { Request, Response } from "express";
-import { runGemini } from "../ai/gemini";
+import { runGemini, runEscalateComplaints } from "../ai/gemini";
 import { createComplaint, getAllComplaints } from "../db/models/complaint";
 const router = express.Router();
 
@@ -22,6 +22,18 @@ interface Complaint {
   priority: string;
   img?: string;
 }
+type Complaints = {
+  id: string;
+  tenantId: string | null;
+  issueType: string;
+  complaintCategory: string;
+  complaintTitle: string;
+  description: string;
+  priority: "Low" | "Medium" | "High";
+  resolvedAt: string | null | Date;
+  updatedAt: string | Date;
+  createdAt: string | Date;
+};
 router.post("/submit-complaint", async (req: Request, res: Response) => {
   try {
     const { selectedIssue, extraDetails } = req.body;
@@ -40,7 +52,7 @@ router.post("/submit-complaint", async (req: Request, res: Response) => {
       description: extraDetails,
       priority,
     };
-    console.log(fullComplaint);
+
     const complaint = await createComplaint(fullComplaint);
     res.status(200).json({
       message: "Complaint submitted in successfully",
@@ -54,8 +66,22 @@ router.post("/submit-complaint", async (req: Request, res: Response) => {
 });
 router.get("/get-complaints", async (req: Request, res: Response) => {
   try {
+    //Returns all complaints from DB
     const complaints = await getAllComplaints();
-    res.status(200).json({ complaints });
-  } catch (error) {}
+    const stringifyComplaints = JSON.stringify(complaints);
+    //Send string to AI
+
+    //AI will return a string of updated complaints
+    //Turn string to JSON
+
+    const escalatedComplaints = await runEscalateComplaints(
+      stringifyComplaints
+    );
+    console.log(escalatedComplaints);
+    res.status(200).json({ escalatedComplaints });
+  } catch (error) {
+    console.error("Error getting complaints:", error);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 export const complaintRoutes = router;
