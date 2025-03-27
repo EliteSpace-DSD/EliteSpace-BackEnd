@@ -25,14 +25,9 @@ export const requiresAuthentication =  async (req: Request, res: Response, next:
             email: data.user.email
         };
 
-        console.log("Debug log 1:(token) ", token);
-        console.log("Debug log 2:(data) ", data);
-        console.log("Debug log 3:(data.user) ", data.user);
-
         const tenantInfo = await getTenantInfoByUserId(data.user.id);
         if (!tenantInfo) {
             console.error("unable to find tenant in query");
-            console.log("Debug log 4:(tenantInfo) ", tenantInfo);
             res.status(401).json({message: "unable to find tenant in query"});
             return;          
         }
