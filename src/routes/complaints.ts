@@ -27,8 +27,12 @@ router.post("/submit-complaint", async (req: Request, res: Response) => {
     const { selectedIssue, extraDetails } = req.body;
 
     //Pass full object to AI
-    const priority = await runGemini(extraDetails);
-
+    let priority = "";
+    if (extraDetails === undefined) {
+      console.error("Error: extraDetails is undefined");
+    } else {
+      priority = await runGemini(extraDetails);
+    }
     const fullComplaint: Complaint = {
       complaintCategory: selectedIssue.category,
       complaintTitle: selectedIssue.subCategory,
@@ -36,6 +40,7 @@ router.post("/submit-complaint", async (req: Request, res: Response) => {
       description: extraDetails,
       priority,
     };
+    console.log(fullComplaint);
     const complaint = await createComplaint(fullComplaint);
     res.status(200).json({
       message: "Complaint submitted in successfully",

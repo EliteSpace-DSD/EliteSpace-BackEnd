@@ -8,9 +8,7 @@ import { ComplaintInsertType, complaints } from "../schema";
 
 export const createComplaint = async (complaint: ComplaintInsertType) => {
   try {
-    console.log("Inserting complaint:", complaint);
     const result = await db.insert(complaints).values(complaint).returning();
-    console.log("Insert result:", result);
     return result[0] || null;
   } catch (error) {
     console.error(error);
