@@ -37,24 +37,6 @@ export async function signInWithEmail(email: string, password: string) {
 }
 
 export async function linkUserToTenant(email: string, authUserId: string, phone: string, dob: string) {
-  console.log("Debug(email): ", email);
-  console.log("Debug(auth_user_id): ", authUserId);
-  console.log("Debug(phone): ", phone);
-  console.log("Debug(dob): ", dob);
-
-  const checkMatchingTenant = async () => {
-    const { data: rows, error} = await authClient
-    .from("tenants")
-    .select("*")
-    .eq("email", email);
-
-    console.log("Debug(data from check)");
-    console.log(data);
-  }
-
-  checkMatchingTenant();
-
-
   const { data, error } = await authClient.from("tenants").update({ user_id: authUserId, phone: phone, dob: dob }).eq("email", email);
   console.log(data);
   return { data, error };
