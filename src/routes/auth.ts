@@ -44,6 +44,12 @@ router.post("/register", async (req: Request, res: Response) => {
       return;
     }
 
+    console.log("Debug 1 (data)", data);
+    console.log("Debug 2 (data.user)", data.user);
+    if (data.user) {
+      console.log("Debug 3 (data.user.id)", data.user.id);
+    }
+    
     if (data.user) {
       const { error: dbError } = await linkUserToTenant(
         email,
