@@ -15,7 +15,6 @@ import smartPackageRoutes from "./routes/smartPackage";
 import demoRoutes from "./routes/demo";
 import lockRoutes from "./routes/locks";
 
-
 // Configuration
 const app = express();
 const HOST: string = config.HOST;
@@ -58,7 +57,7 @@ app.use(
     credentials: true,
   })
 );
-
+app.options("*", cors());
 // Use routes
 app.use("/auth", authRoutes);
 app.use("/leases", requiresAuthentication, leaseRoutes);
